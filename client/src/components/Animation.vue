@@ -1,6 +1,7 @@
 <template>
   <div class="animation">
     <h1 v-once>ID: {{id}}</h1>
+    <h1 v-once>IID: {{iid}}</h1>
     <div class="random"
       :style="{backgroundImage: backgroundImage,
       borderStyle: borderStyle,
@@ -132,6 +133,9 @@ export default {
       selected: false
     }
   },
+  props: [
+    'iid'
+  ],
   computed: {
     backgroundImage: function () {
       switch (parseInt(this.mode) % 2) {
