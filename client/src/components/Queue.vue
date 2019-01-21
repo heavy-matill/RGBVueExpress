@@ -3,7 +3,7 @@
     <h1>Queue here</h1>
     <li v-for="id in ids" :key="id">
       {{ id }}
-    <Animation :iid="id"/>
+      <Animation :id="id"/>
     </li>
   </div>
 </template>
