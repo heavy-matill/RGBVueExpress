@@ -34,7 +34,7 @@
       style="background-image: linear-gradient(to right, rgb(255, 0, 0) 20%, rgb(0, 0, 255) 80%)"
       id="animationElement1" -->
     </div>
-    <section id="settings" :style="{display: displaySettings}">
+    <section id="settings" class="dropdown-content" :style="{display: displaySettings}">
       <table>
         <tr>
           <td>
@@ -132,7 +132,8 @@ export default {
     }
   },
   props: {
-    id: Number
+    id: Number,
+    showId: Number
   },
   computed: {
     backgroundImage: function () {
@@ -161,7 +162,7 @@ export default {
       }
     },
     displaySettings: function () {
-      switch (this.selected) {
+      switch (this.showId === this.id) {
         case true:
           return 'block'
         case false:
@@ -191,6 +192,9 @@ export default {
     },
     select () {
       this.selected = !this.selected
+      if (this.selected) {
+        this.$emit('selected', this.id)
+      }
     }
   }
 }
@@ -234,4 +238,13 @@ li {
 a {
   color: #42b983;
 }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
 </style>

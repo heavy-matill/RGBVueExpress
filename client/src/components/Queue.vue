@@ -3,7 +3,7 @@
     <h1>Queue here</h1>
     <li v-for="id in ids" :key="id">
       {{ id }}
-      <Animation :id="id"/>
+      <Animation :id="id" :showId="showId" @selected="onSelected"/>
     </li>
   </div>
 </template>
@@ -16,11 +16,17 @@ export default {
   data () {
     return {
       ids: [0, 1, 2],
+      showId: 2,
       lid: 9
     }
   },
   components: {
     Animation
+  },
+  methods: {
+    onSelected (value) {
+      this.showId = value
+    }
   }
 }
 </script>
