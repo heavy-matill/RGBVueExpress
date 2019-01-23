@@ -15,7 +15,7 @@ export default {
   name: 'Queue',
   data () {
     return {
-      animationDatas: [{id: 0, mode: 0, c1: {r: 255, g: 0, b: 0}, c2: {r: 0, g: 255, b: 0}, t: 900, p: 70, nr: 4, br: true, selected: false}, {id: 1, mode: 0, c1: {r: 0, g: 255, b: 0}, c2: {r: 0, g: 0, b: 255}, t: 900, p: 70, nr: 4, br: true, selected: true}],
+      animationDatas: [{id: 0, mode: 0, c1: {r: 255, g: 0, b: 0}, c2: {r: 0, g: 255, b: 0}, t: 9, p: 70, nr: 4, br: true, selected: false}, {id: 1, mode: 1, c1: {r: 0, g: 255, b: 0}, c2: {r: 0, g: 0, b: 255}, t: 50, p: 20, nr: 1, br: true, selected: true}],
       showId: 1
     }
   },
