@@ -38,21 +38,21 @@
       <table>
         <tr>
           <td>
-            <input type="radio" v-model="mode" value="0">
+            <input type="radio" v-model="animationData.mode" value="0">
             Jump
           </td>
           <td>
-            <input type="radio" v-model="mode" value="1">
+            <input type="radio" v-model="animationData.mode" value="1">
             Fade
           </td>
         </tr>
         <tr>
           <td>
-            <input type="radio" v-model="mode" value="2">
+            <input type="radio" v-model="animationData.mode" value="2">
             Strobe
           </td>
           <td>
-            <input type="radio" v-model="mode" value="3">
+            <input type="radio" v-model="animationData.mode" value="3">
             Pulse
           </td>
         </tr>
@@ -64,33 +64,33 @@
             <input type="range" v-model="posT">
           </td>
           <td>
-            <input type="number" v-model="t" @change="updatePosT">
+            <input type="number" v-model="animationData.t" @change="updatePosT">
           </td>
           <td>s</td>
         </tr>
         <tr>
           <td>On-Time</td>
           <td>
-            <input type="range" v-model="p">
+            <input type="range" v-model="animationData.p">
           </td>
           <td>
-            <input type="number" v-model="p">
+            <input type="number" v-model="animationData.p">
           </td>
           <td>%</td>
         </tr>
         <tr>
           <td>Repititions</td>
           <td>
-            <input type="range" v-model="nr">
+            <input type="range" v-model="animationData.nr">
           </td>
           <td>
-            <input type="number" v-model="nr">
+            <input type="number" v-model="animationData.nr">
           </td>
         </tr>
         <tr>
           <td>Re-Queue</td>
           <td>
-            <input type="checkbox" v-model="br">
+            <input type="checkbox" v-model="animationData.br">
           </td>
           <td></td>
         </tr>
@@ -104,54 +104,55 @@ export default {
   name: 'Animation',
   data () {
     return {
-      mode: '0',
-      c1: {
-        r: 255,
-        g: 129,
-        b: 0
-      },
-      c2: {
-        r: 0,
-        g: 0,
-        b: 255
-      },
-      c3: {
-        r: 0,
-        g: 0,
-        b: 0
-      },
-      t: 1025,
-      p: 40,
-      nr: 0,
-      br: false,
-
       posT: 10,
       pGradient: 0,
-      pGradient2: 0,
-      selected: false
+      pGradient2: 0
     }
   },
   props: {
     id: Number,
-    showId: Number
+    showId: Number,
+    selected: Boolean,
+    animationData: {
+      mode: Number,
+      c1: {
+        r: Number,
+        g: Number,
+        b: Number
+      },
+      c2: {
+        r: Number,
+        g: Number,
+        b: Number
+      },
+      c3: {
+        r: Number,
+        g: Number,
+        b: Number
+      },
+      t: Number,
+      p: Number,
+      nr: Number,
+      br: Boolean
+    }
   },
   computed: {
     backgroundImage: function () {
-      switch (parseInt(this.mode) % 2) {
+      switch (parseInt(this.animationData.mode) % 2) {
         case 0:
-          return 'linear-gradient(to right, #' + this.c1String + ' ' + this.p + '%, #' + this.c2String + ' 0)'
+          return 'linear-gradient(to right, #' + this.c1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 0)'
         case 1:
           return 'linear-gradient(to right, #' + this.c1String + ' 20%, #' + this.c2String + ' 80%)'
       }
     },
     c1String: function () {
-      return this.c1.r.toString(16).padStart(2, '0') + this.c1.g.toString(16).padStart(2, '0') + this.c1.b.toString(16).padStart(2, '0')
+      return this.animationData.c1.r.toString(16).padStart(2, '0') + this.animationData.c1.g.toString(16).padStart(2, '0') + this.animationData.c1.b.toString(16).padStart(2, '0')
     },
     c2String: function () {
-      return this.c2.r.toString(16).padStart(2, '0') + this.c2.g.toString(16).padStart(2, '0') + this.c2.b.toString(16).padStart(2, '0')
+      return this.animationData.c2.r.toString(16).padStart(2, '0') + this.animationData.c2.g.toString(16).padStart(2, '0') + this.animationData.c2.b.toString(16).padStart(2, '0')
     },
     modeChange: function () {
-      return this.mode > 1
+      return this.animationData.mode > 1
     },
     borderStyle: function () {
       switch (this.selected) {
@@ -178,17 +179,17 @@ export default {
       this.updateT()
     },
     modeChange: function () {
-      let ctemp = this.c2
-      this.c2 = this.c3
-      this.c3 = ctemp
+      let ctemp = this.animationData.c2
+      this.animationData.c2 = this.animationData.c3
+      this.animationData.c3 = ctemp
     }
   },
   methods: {
     updatePosT () {
-      this.posT = logslDur.position(this.t)
+      this.posT = logslDur.position(this.animationData.t)
     },
     updateT () {
-      this.t = logslDur.value(this.posT).toFixed(2)
+      this.animationData.t = logslDur.value(this.posT).toFixed(2)
     },
     select () {
       this.selected = !this.selected

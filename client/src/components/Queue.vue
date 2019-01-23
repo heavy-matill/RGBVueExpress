@@ -1,9 +1,9 @@
 <template>
   <div class="queue">
     <h1>Queue here</h1>
-    <li v-for="id in ids" :key="id">
-      {{ id }}
-      <Animation :id="id" :showId="showId" @selected="onSelected"/>
+    <li v-for="animationData in animationDatas" :key="animationData.id">
+      {{ animationData.id}}
+      <Animation :id="animationData.id" :showId="showId" :animationData="animationData" @selected="onSelected"/>
     </li>
   </div>
 </template>
@@ -15,7 +15,8 @@ export default {
   name: 'Queue',
   data () {
     return {
-      ids: [0, 1, 2],
+      ids: [0, 1],
+      animationDatas: [{id: 0, mode: 0, c1: {r: 255, g: 0, b: 0}, c2: {r: 0, g: 255, b: 0}, c3: {r: 0, g: 0, b: 0}, t: 900, p: 70, nr: 4, br: true}, {id: 1, mode: 0, c1: {r: 0, g: 255, b: 0}, c2: {r: 0, g: 0, b: 255}, c3: {r: 0, g: 0, b: 0}, t: 900, p: 70, nr: 4, br: true}],
       showId: 2,
       lid: 9
     }
