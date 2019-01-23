@@ -8,7 +8,7 @@
       borderWidth: 'medium'}"
     >
     <div v-on:click="select">
-      <input type="checkbox" v-model="selected">
+      <input type="checkbox" v-model="animationData.selected">
     </div>
       <table>
         <tr>
@@ -106,13 +106,17 @@ export default {
     return {
       posT: 10,
       pGradient: 0,
-      pGradient2: 0
+      pGradient2: 0,
+      c3: {
+        r: 0,
+        g: 0,
+        b: 0
+      }
     }
   },
   props: {
     id: Number,
     showId: Number,
-    selected: Boolean,
     animationData: {
       mode: Number,
       c1: {
@@ -133,7 +137,8 @@ export default {
       t: Number,
       p: Number,
       nr: Number,
-      br: Boolean
+      br: Boolean,
+      selected: Boolean
     }
   },
   computed: {
@@ -155,7 +160,7 @@ export default {
       return this.animationData.mode > 1
     },
     borderStyle: function () {
-      switch (this.selected) {
+      switch (this.animationData.selected) {
         case true:
           return 'solid;'
         case false:
@@ -163,7 +168,7 @@ export default {
       }
     },
     displaySettings: function () {
-      switch (this.showId === this.id) {
+      switch (this.showId === this.animationData.id) {
         case true:
           return 'block'
         case false:
@@ -180,8 +185,8 @@ export default {
     },
     modeChange: function () {
       let ctemp = this.animationData.c2
-      this.animationData.c2 = this.animationData.c3
-      this.animationData.c3 = ctemp
+      this.animationData.c2 = this.c3
+      this.c3 = ctemp
     }
   },
   methods: {
@@ -192,9 +197,11 @@ export default {
       this.animationData.t = logslDur.value(this.posT).toFixed(2)
     },
     select () {
-      this.selected = !this.selected
-      if (this.selected) {
-        this.$emit('selected', this.id)
+      this.animationData.selected = !this.animationData.selected
+      if (this.animationData.selected) {
+        this.$emit('selected', this.animationData.id)
+      } else {
+        this.$emit('unselected', this.animationData.id)
       }
     }
   }
