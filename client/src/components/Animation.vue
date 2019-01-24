@@ -13,19 +13,19 @@
       <table>
         <tr>
           <td>
-            <button class="delButton" onclick="removeAnimation(1)">+</button>
+            <button @click="addAnimation(0)">+</button>
           </td>
           <td>
-            <button class="delButton" onclick="removeAnimation(1)">&#8592;</button>
+            <button @click="moveAnimation(-1)">&#8592;</button>
           </td>
           <td>
-            <button class="delButton" onclick="removeAnimation(1)">X</button>
+            <button @click="removeAnimation()">X</button>
           </td>
           <td>
-            <button class="delButton" onclick="removeAnimation(1)">&#8594;</button>
+            <button @click="moveAnimation(1)">&#8594;</button>
           </td>
           <td>
-            <button class="delButton" onclick="removeAnimation(1)">+</button>
+            <button @click="addAnimation(1)">+</button>
           </td>
         </tr>
       </table>
@@ -115,6 +115,7 @@ export default {
     }
   },
   props: {
+    index: Number,
     id: Number,
     showId: Number,
     animationData: {
@@ -203,6 +204,15 @@ export default {
       } else {
         this.$emit('unselected', this.animationData.id)
       }
+    },
+    addAnimation (position) {
+      this.$emit('add', [this.index, position])
+    },
+    moveAnimation (position) {
+      this.$emit('move', [this.index, position])
+    },
+    removeAnimation (position) {
+      this.$emit('remove', this.index)
     }
   }
 }
