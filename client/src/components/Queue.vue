@@ -1,15 +1,20 @@
 <template>
   <div class="queue">
     <h1>Queue here</h1>
+    <input type="checkbox" v-model="selectMultiple">Select multiple items
     <li v-for="(animationData, index) in animationDatas" :key="animationData.id">
       {{animationData.id}}
       {{index}}
-      <Animation :index="index" :id="animationData.id" :showId="showId" :animationData="animationData"
+      <Animation :index="index" :id="animationData.id" :showId="showId" :selectMultiple="selectMultiple" :animationData="animationData"
       @selected="onSelected"
       @unselected="onUnSelected"
       @add="onAdd"
       @move="onMove"
       @remove="onRemove"
+      @changeT="onChangeT"
+      @changeP="onChangeP"
+      @changeNr="onChangeNr"
+      @changeBr="onChangeBr"
       />
     </li>
   </div>
@@ -26,6 +31,7 @@ export default {
         {id: 0, mode: 0, c1: {r: 255, g: 0, b: 0}, c2: {r: 0, g: 255, b: 0}, t: 9, p: 70, nr: 4, br: true, selected: false},
         {id: 1, mode: 1, c1: {r: 0, g: 255, b: 0}, c2: {r: 0, g: 0, b: 255}, t: 50, p: 20, nr: 1, br: true, selected: true}],
       showId: 1,
+      selectMultiple: false,
       nextId: 2
     }
   },
@@ -63,6 +69,34 @@ export default {
     },
     onRemove (value) {
       this.animationDatas.splice(value, 1)
+    },
+    onChangeT (setT, id) {
+      for (let animationData of this.animationDatas) {
+        if (animationData.selected && (animationData.id !== id)) {
+          animationData.t = setT
+        }
+      }
+    },
+    onChangeP (setP, id) {
+      for (let animationData of this.animationDatas) {
+        if (animationData.selected && (animationData.id !== id)) {
+          animationData.p = setP
+        }
+      }
+    },
+    onChangeNr (setNr, id) {
+      for (let animationData of this.animationDatas) {
+        if (animationData.selected && (animationData.id !== id)) {
+          animationData.nr = setNr
+        }
+      }
+    },
+    onChangeBr (setBr, id) {
+      for (let animationData of this.animationDatas) {
+        if (animationData.selected && (animationData.id !== id)) {
+          animationData.br = setBr
+        }
+      }
     }
   }
 }

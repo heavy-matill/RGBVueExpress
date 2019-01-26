@@ -61,36 +61,36 @@
         <tr>
           <td>Duration</td>
           <td>
-            <input type="range" v-model="posT">
+            <input type="range" v-model="posT" @blur="changeT">
           </td>
           <td>
-            <input type="number" v-model="animationData.t" @change="updatePosT">
+            <input type="number" v-model="animationData.t" @blur="changeT">
           </td>
           <td>s</td>
         </tr>
         <tr>
           <td>On-Time</td>
           <td>
-            <input type="range" v-model="animationData.p">
+            <input type="range" v-model="animationData.p" @blur="changeP">
           </td>
           <td>
-            <input type="number" v-model="animationData.p">
+            <input type="number" v-model="animationData.p" @blur="changeP">
           </td>
           <td>%</td>
         </tr>
         <tr>
           <td>Repititions</td>
           <td>
-            <input type="range" v-model="animationData.nr">
+            <input type="range" v-model="animationData.nr" @blur="changeNr">
           </td>
           <td>
-            <input type="number" v-model="animationData.nr">
+            <input type="number" v-model="animationData.nr" @blur="changeNr">
           </td>
         </tr>
         <tr>
           <td>Re-Queue</td>
           <td>
-            <input type="checkbox" v-model="animationData.br">
+            <input type="checkbox" v-model="animationData.br"  @blur="changeBr">
           </td>
           <td></td>
         </tr>
@@ -104,7 +104,7 @@ export default {
   name: 'Animation',
   data () {
     return {
-      posT: 10,
+      // posT: 10,
       pGradient: 0,
       pGradient2: 0,
       c3: {
@@ -118,6 +118,7 @@ export default {
     index: Number,
     id: Number,
     showId: Number,
+    selectMultiple: Boolean,
     animationData: {
       mode: Number,
       c1: {
@@ -175,15 +176,17 @@ export default {
         case false:
           return 'none'
       }
+    },
+    posT: {
+      get: function () {
+        return logslDur.position(this.animationData.t)
+      },
+      set: function (newPosT) {
+        this.animationData.t = Math.round(logslDur.value(newPosT) * 100) / 100
+      }
     }
   },
-  mounted: function () {
-    this.updatePosT()
-  },
   watch: {
-    posT: function () {
-      this.updateT()
-    },
     modeChange: function () {
       let ctemp = this.animationData.c2
       this.animationData.c2 = this.c3
@@ -191,12 +194,6 @@ export default {
     }
   },
   methods: {
-    updatePosT () {
-      this.posT = logslDur.position(this.animationData.t)
-    },
-    updateT () {
-      this.animationData.t = logslDur.value(this.posT).toFixed(2)
-    },
     select () {
       this.animationData.selected = !this.animationData.selected
       if (this.animationData.selected) {
@@ -213,6 +210,26 @@ export default {
     },
     removeAnimation (position) {
       this.$emit('remove', this.index)
+    },
+    changeT () {
+      if (this.selectMultiple) {
+        this.$emit('changeT', this.animationData.t, this.id)
+      }
+    },
+    changeP () {
+      if (this.selectMultiple) {
+        this.$emit('changeP', this.animationData.p, this.id)
+      }
+    },
+    changeNr () {
+      if (this.selectMultiple) {
+        this.$emit('changeNr', this.animationData.nr, this.id)
+      }
+    },
+    changeBr () {
+      if (this.selectMultiple) {
+        this.$emit('changeBr', this.animationData.br, this.id)
+      }
     }
   }
 }
