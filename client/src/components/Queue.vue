@@ -11,6 +11,7 @@
       @add="onAdd"
       @move="onMove"
       @remove="onRemove"
+      @changeMode="onChangeMode"
       @changeT="onChangeT"
       @changeP="onChangeP"
       @changeNr="onChangeNr"
@@ -70,12 +71,21 @@ export default {
     onRemove (value) {
       this.animationDatas.splice(value, 1)
     },
+    onChangeMode (setMode, id) {
+      for (let animationData of this.animationDatas) {
+        if (animationData.selected && (animationData.id !== id)) {
+          animationData.mode = setMode
+        }
+      }
+      this.$forceUpdate()
+    },
     onChangeT (setT, id) {
       for (let animationData of this.animationDatas) {
         if (animationData.selected && (animationData.id !== id)) {
           animationData.t = setT
         }
       }
+      this.$forceUpdate()
     },
     onChangeP (setP, id) {
       for (let animationData of this.animationDatas) {

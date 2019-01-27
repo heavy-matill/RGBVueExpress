@@ -38,21 +38,21 @@
       <table>
         <tr>
           <td>
-            <input type="radio" v-model="animationData.mode" value="0">
+            <input type="radio" v-model="animationData.mode" value="0" @change="changeMode">
             Jump
           </td>
           <td>
-            <input type="radio" v-model="animationData.mode" value="1">
+            <input type="radio" v-model="animationData.mode" value="1" @change="changeMode">
             Fade
           </td>
         </tr>
         <tr>
           <td>
-            <input type="radio" v-model="animationData.mode" value="2">
+            <input type="radio" v-model="animationData.mode" value="2" @change="changeMode">
             Strobe
           </td>
           <td>
-            <input type="radio" v-model="animationData.mode" value="3">
+            <input type="radio" v-model="animationData.mode" value="3" @change="changeMode">
             Pulse
           </td>
         </tr>
@@ -61,36 +61,36 @@
         <tr>
           <td>Duration</td>
           <td>
-            <input type="range" v-model="posT" @blur="changeT">
+            <input type="range" v-model="posT" @change="changeT">
           </td>
           <td>
-            <input type="number" v-model="animationData.t" @blur="changeT">
+            <input type="number" v-model="animationData.t" @change="changeT">
           </td>
           <td>s</td>
         </tr>
         <tr>
           <td>On-Time</td>
           <td>
-            <input type="range" v-model="animationData.p" @blur="changeP">
+            <input type="range" v-model="animationData.p" @change="changeP">
           </td>
           <td>
-            <input type="number" v-model="animationData.p" @blur="changeP">
+            <input type="number" v-model="animationData.p" @change="changeP">
           </td>
           <td>%</td>
         </tr>
         <tr>
           <td>Repititions</td>
           <td>
-            <input type="range" v-model="animationData.nr" @blur="changeNr">
+            <input type="range" v-model="animationData.nr" @change="changeNr">
           </td>
           <td>
-            <input type="number" v-model="animationData.nr" @blur="changeNr">
+            <input type="number" v-model="animationData.nr" @change="changeNr">
           </td>
         </tr>
         <tr>
           <td>Re-Queue</td>
           <td>
-            <input type="checkbox" v-model="animationData.br"  @blur="changeBr">
+            <input type="checkbox" v-model="animationData.br"  @change="changeBr">
           </td>
           <td></td>
         </tr>
@@ -210,6 +210,11 @@ export default {
     },
     removeAnimation (position) {
       this.$emit('remove', this.index)
+    },
+    changeMode () {
+      if (this.selectMultiple) {
+        this.$emit('changeMode', this.animationData.mode, this.id)
+      }
     },
     changeT () {
       if (this.selectMultiple) {
