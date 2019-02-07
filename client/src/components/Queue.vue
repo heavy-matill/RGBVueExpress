@@ -11,6 +11,7 @@
       @add="onAdd"
       @move="onMove"
       @remove="onRemove"
+      @load="onLoad"
       />
     </li>
     <h1>Settings</h1>
@@ -79,7 +80,6 @@
 
 <script>
 import Animation from './Animation'
-import Settings from './Settings'
 
 export default {
   name: 'Queue',
@@ -102,8 +102,7 @@ export default {
     }
   },
   components: {
-    Animation,
-    Settings
+    Animation
   },
   methods: {
     onSelected (value) {
@@ -144,6 +143,15 @@ export default {
         }
       }
       this.$forceUpdate()
+    },
+    onLoad (animationData) {
+      this.mode = animationData.mode
+      this.c1 = animationData.c1
+      this.c2 = animationData.c2
+      this.t = animationData.t
+      this.p = animationData.p
+      this.nr = animationData.nr
+      this.br = animationData.br
     },
     changeT () {
       for (let animationData of this.animationDatas) {

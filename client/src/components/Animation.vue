@@ -7,7 +7,7 @@
       display: 'inline-block',
       borderWidth: 'medium'}"
     >
-    <div v-on:click="select">
+    <div v-on:click="load">
       <input type="checkbox" v-model="animationData.selected">
     </div>
       <table>
@@ -132,13 +132,8 @@ export default {
     }
   },
   methods: {
-    select () {
-      this.animationData.selected = !this.animationData.selected
-      if (this.animationData.selected) {
-        this.$emit('selected', this.animationData.id)
-      } else {
-        this.$emit('unselected', this.animationData.id)
-      }
+    load () {
+      this.$emit('load', this.animationData)
     },
     addAnimation (position) {
       this.$emit('add', [this.index, position])
