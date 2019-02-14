@@ -87,7 +87,7 @@ export default {
         case 0:
           return 'linear-gradient(to right, #' + this.c1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 0)'
         case 1:
-          return 'linear-gradient(to right, #' + this.c1String + ' 20%, #' + this.c2String + ' 80%)'
+          return 'linear-gradient(to right, #' + this.c1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 100%)'
       }
     },
     c1String: function () {
