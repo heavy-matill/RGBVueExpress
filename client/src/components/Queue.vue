@@ -1,21 +1,40 @@
 <template>
   <div class="queue">
     <h1>Queue here</h1>
-    <input type="checkbox" v-model="selectMultiple">Select multiple items
+    <h3>Mutliselection</h3>
+    <div class="line">
+        <div><v-switch v-model="selectMultiple"
+        :label="`Enabled: ${selectMultiple.toString()}`" /></div>
+        <div><v-btn @click="selectAll">Select all</v-btn></div>
+    </div>
     <li v-for="(animationData, index) in animationDatas" :key="animationData.id">
       {{animationData.id}}
       {{index}}
       <Animation :index="index" :id="animationData.id" :showId="showId" :selectMultiple="selectMultiple" :animationData="animationData"
-      @selected="onSelected"
-      @unselected="onUnSelected"
-      @add="onAdd"
-      @move="onMove"
-      @remove="onRemove"
-      @load="onLoad"
+      @selected="select"
+      @unselected="unselect"
+      @add="add"
+      @move="move"
+      @remove="remove"
+      @load="load"
       />
     </li>
     <h1>Settings</h1>
-<table>
+    <table><tr>
+      <td>
+        <h2>Color 1</h2>
+      </td>
+      <td>
+        <h2>Color 2</h2>
+      </td>
+      </tr>
+      <tr>
+        <td>
+    <sketch-picker v-model="cp1" /></td>
+    <td>
+    <sketch-picker v-model="cp2" /></td></tr></table>
+    <h2>Mode</h2>
+    <table class="settings">
       <tr>
         <td>
           <input type="radio" v-model="mode" value="0" @change="changeMode">
@@ -37,7 +56,8 @@
         </td>
       </tr>
     </table>
-    <table>
+    <h2>Configuration</h2>
+    <table class="settings">
       <tr>
         <td>Duration</td>
         <td>
@@ -59,7 +79,7 @@
         <td>%</td>
       </tr>
       <tr>
-        <td>Repititions</td>
+        <td>Repetitions</td>
         <td>
           <input type="range" v-model="nr" @change="changeNr">
         </td>
@@ -80,6 +100,7 @@
 
 <script>
 import Animation from './Animation'
+import { Sketch } from 'vue-color'
 
 export default {
   name: 'Queue',
@@ -95,6 +116,8 @@ export default {
       mode: 0,
       c1: {r: 255, g: 0, b: 0},
       c2: {r: 0, g: 255, b: 0},
+      cp1: {r: 255, g: 0, b: 0},
+      cp2: {r: 0, g: 255, b: 0},
       t: 9,
       p: 72,
       nr: 4,
@@ -102,13 +125,16 @@ export default {
     }
   },
   components: {
-    Animation
+    Animation,
+    'sketch-picker': Sketch
   },
   methods: {
-    onSelected (value) {
-      this.showId = value
+    select (value) {
+      if (this.showId === -1) {
+        this.showId = value
+      }
     },
-    onUnSelected (value) {
+    unselect (value) {
       if (value === this.showId) {
         for (let animationData of this.animationDatas) {
           if (animationData.selected) {
@@ -119,11 +145,11 @@ export default {
         this.showId = -1
       }
     },
-    onAdd (value) {
+    add (value) {
       this.animationDatas.splice(value[0], 0, JSON.parse(JSON.stringify(this.animationDatas[value[0]])))
       this.animationDatas[value[0] + 1].id = this.nextId++
     },
-    onMove (value) {
+    move (value) {
       // check if element elements are out of bounds
       if (!(((value[0] + value[1]) < 0) || ((value[0] + value[1]) >= this.animationDatas.length))) {
         // switch elements
@@ -133,8 +159,49 @@ export default {
         this.$forceUpdate()
       }
     },
-    onRemove (value) {
-      this.animationDatas.splice(value, 1)
+    remove (value) {
+      if (this.animationDatas.length > 1) {
+        this.animationDatas.splice(value, 1)
+      }
+    },
+    load (animationData) {
+      this.mode = animationData.mode
+      this.c1 = animationData.c1
+      this.c2 = animationData.c2
+      this.cp1 = animationData.c1
+      this.cp2 = animationData.c2
+      this.t = animationData.t
+      this.p = animationData.p
+      this.nr = animationData.nr
+      this.br = animationData.br
+    },
+    changeC1 () {
+      for (let animationData of this.animationDatas) {
+        if (animationData.selected) {
+          if (this.cp1.rgba) {
+            animationData.c1.r = this.cp1.rgba.r
+            animationData.c1.g = this.cp1.rgba.g
+            animationData.c1.b = this.cp1.rgba.b
+          } else {
+            // animationData.c1 = this.cp1
+          }
+        }
+      }
+      this.$forceUpdate()
+    },
+    changeC2 () {
+      for (let animationData of this.animationDatas) {
+        if (animationData.selected) {
+          if (this.cp2.rgba) {
+            animationData.c2.r = this.cp2.rgba.r
+            animationData.c2.g = this.cp2.rgba.g
+            animationData.c2.b = this.cp2.rgba.b
+          } else {
+            // animationData.c2 = this.cp2
+          }
+        }
+      }
+      this.$forceUpdate()
     },
     changeMode () {
       for (let animationData of this.animationDatas) {
@@ -143,15 +210,6 @@ export default {
         }
       }
       this.$forceUpdate()
-    },
-    onLoad (animationData) {
-      this.mode = animationData.mode
-      this.c1 = animationData.c1
-      this.c2 = animationData.c2
-      this.t = animationData.t
-      this.p = animationData.p
-      this.nr = animationData.nr
-      this.br = animationData.br
     },
     changeT () {
       for (let animationData of this.animationDatas) {
@@ -181,6 +239,19 @@ export default {
           animationData.br = this.br
         }
       }
+    },
+    selectAll () {
+      this.selectMultiple = true
+      for (let animationData of this.animationDatas) {
+        animationData.selected = true
+      }
+    },
+    unselectAll () {
+      if (!this.selectMultiple) {
+        for (let animationData of this.animationDatas) {
+          animationData.selected = false
+        }
+      }
     }
   },
   computed: {
@@ -191,6 +262,14 @@ export default {
       set: function (newPosT) {
         this.t = Math.round(logslDur.value(newPosT) * 100) / 100
       }
+    }
+  },
+  watch: {
+    cp1: function (val) {
+      this.changeC1()
+    },
+    cp2: function (val) {
+      this.changeC2()
     }
   }
 }
@@ -233,5 +312,27 @@ li {
 }
 a {
   color: #42b983;
+}
+.settings {
+  width: 440px;
+  padding: 10px 10px 0;
+  box-sizing: initial;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 8px 16px rgba(0, 0, 0, .15);
+}
+.settings input[type="number"] {
+  width: 60px;
+}
+.settings input[type="range"] {
+  width: 240px;
+}
+.line {
+  display: flex;
+  flex-direction: row;
+}
+.line div {
+  margin: 10px;
+  text-align: center;
 }
 </style>

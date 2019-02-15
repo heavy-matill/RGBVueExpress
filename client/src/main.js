@@ -5,8 +5,12 @@ import App from './App'
 // import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+// material design icons
+import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  iconfont: 'mdi' // 'md' || 'mdi' || 'fa' || 'fa4'
+})
 
 Vue.config.productionTip = false
 

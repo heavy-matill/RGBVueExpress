@@ -7,25 +7,46 @@
       display: 'inline-block',
       borderWidth: 'medium'}"
     >
-    <div v-on:click="load">
-      <input type="checkbox" v-model="animationData.selected">
+    <div v-on:click="click">
+      <table>
+        <tr>
+          <td>
+            <v-icon small>mdi-watch</v-icon>{{animationData.t}}
+          </td>
+          <td>
+            <v-icon small>mdi-percent</v-icon>{{animationData.p}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <v-icon small>mdi-repeat</v-icon>{{animationData.nr}}
+          </td>
+          <td v-if="this.animationData.br" >
+            <v-icon small>mdi-reload</v-icon>
+          </td>
+        </tr>
+      </table>
     </div>
       <table>
         <tr>
           <td>
-            <button @click="addAnimation(0)">+</button>
+            <v-icon @click="addAnimation(0)">mdi-plus</v-icon>
           </td>
           <td>
-            <button @click="moveAnimation(-1)">&#8592;</button>
+            <v-icon @click="moveAnimation(-1)">mdi-arrow-left</v-icon>
           </td>
           <td>
-            <button @click="removeAnimation()">X</button>
+            <v-icon v-if="!this.animationData.selected" @click="select()">mdi-checkbox-blank-outline</v-icon>
+            <v-icon v-if="this.animationData.selected" @click="unselect()">mdi-checkbox-marked-outline</v-icon>
           </td>
           <td>
-            <button @click="moveAnimation(1)">&#8594;</button>
+            <v-icon @click="removeAnimation()">mdi-delete</v-icon>
           </td>
           <td>
-            <button @click="addAnimation(1)">+</button>
+            <v-icon @click="moveAnimation(1)">mdi-arrow-right</v-icon>
+          </td>
+          <td>
+            <v-icon @click="addAnimation(1)">mdi-plus</v-icon>
           </td>
         </tr>
       </table>
@@ -129,9 +150,24 @@ export default {
       let ctemp = this.animationData.c2
       this.animationData.c2 = this.c3
       this.c3 = ctemp
+      if (this.modeChange) {
+        this.animationData.c2 = {r: 0, g: 0, b: 0}
+        this.c2 = {r: 0, g: 0, b: 0}
+      }
+    },
+    selected: function () {
+      if (this.animationData.selected) {
+        this.$emit('selected', this.id)
+      } else {
+        this.$emit('unselected', this.id)
+      }
     }
   },
   methods: {
+    click () {
+      this.animationData.selected = !this.animationData.selected
+      this.load()
+    },
     load () {
       this.$emit('load', this.animationData)
     },
@@ -143,6 +179,16 @@ export default {
     },
     removeAnimation (position) {
       this.$emit('remove', this.index)
+    },
+    changeC1 () {
+      if (this.selectMultiple) {
+        this.$emit('changeMode', this.animationData.c1, this.id)
+      }
+    },
+    changeC2 () {
+      if (this.selectMultiple) {
+        this.$emit('changeMode', this.animationData.c2, this.id)
+      }
     },
     changeMode () {
       if (this.selectMultiple) {
@@ -168,6 +214,12 @@ export default {
       if (this.selectMultiple) {
         this.$emit('changeBr', this.animationData.br, this.id)
       }
+    },
+    select () {
+      this.animationData.selected = true
+    },
+    unselect () {
+      this.animationData.selected = false
     }
   }
 }
@@ -196,28 +248,18 @@ var logslDur = new LogSlider({maxpos: 100, minval: 0.01, maxval: 65.535})
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1,
-h2 {
-  font-weight: normal;
+.animation td {
+  border-radius: 5px;
+  background: white;
+  opacity: 0.8;
+  padding: 3px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.animation td * {
+  vertical-align: middle;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+.animation table {
+  border-collapse: separate; /* Or do nothing, this is default */
+  border-spacing: 5px; /* Only works if border-collapse is separate */
 }
 
 </style>

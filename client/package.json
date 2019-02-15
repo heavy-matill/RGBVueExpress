@@ -16,9 +16,11 @@
   "dependencies": {
     "axios": "^0.18.0",
     "vue": "^2.5.2",
+    "vue-color": "^2.7.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "@mdi/font": "^3.4.93",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
@@ -61,6 +63,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.31",
     "karma-webpack": "^2.0.2",
+    "material-design-icons-iconfont": "^4.0.4",
     "mocha": "^3.2.0",
     "nightwatch": "^0.9.12",
     "node-notifier": "^5.1.2",
