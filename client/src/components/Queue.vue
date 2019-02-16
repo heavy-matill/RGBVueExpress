@@ -7,9 +7,9 @@
         :label="`Enabled: ${selectMultiple.toString()}`" /></div>
         <div><v-btn @click="selectAll">Select all<v-icon right dark>mdi-checkbox-multiple-marked-outline</v-icon></v-btn></div>
     </div>
-    <div class="line"> 
-        <div><v-select v-bind:items="colors" v-model="adlNames" label="Select or add configuration" autocomplete @keyup.native.enter="addValue"></v-select></div>
-        <div><v-btn @click="selectAll">Save<v-icon right dark>mdi-floppy</v-icon></v-btn></div>
+    <div class="line">
+        <div><v-select v-bind:items="adlNames" v-model="adlName" label="Select or add configuration" autocomplete @keyup.native.enter="addValue"></v-select></div>
+        <div><v-btn @click="printAll">Save<v-icon right dark>mdi-floppy</v-icon></v-btn></div>
         <div><v-btn @click="selectAll">Load<v-icon right dark>mdi-cloud-download</v-icon></v-btn></div>
         <div><v-btn @click="selectAll">Remove<v-icon right dark>mdi-delete</v-icon></v-btn></div>
     </div>
@@ -107,6 +107,7 @@
 <script>
 import Animation from './Animation'
 import { Sketch } from 'vue-color'
+import axios from 'axios'
 
 export default {
   name: 'Queue',
@@ -127,7 +128,8 @@ export default {
       t: 9,
       p: 72,
       nr: 4,
-      br: true
+      br: true,
+      adlNames: ['asd', 'qwe']
     }
   },
   components: {
@@ -258,6 +260,8 @@ export default {
           animationData.selected = false
         }
       }
+    },
+    printAll () {
     }
   },
   computed: {
@@ -277,6 +281,17 @@ export default {
     cp2: function (val) {
       this.changeC2()
     }
+  },
+  mounted () {
+    axios
+      .get('http://localhost:3000/adl')
+      .then(res => {
+        this.adlNames = []
+        for (let animationDataList of res.data) {
+          this.adlNames.add(animationDataList.name)
+          console.log(animationDataList.name)
+        }
+      })
   }
 }
 function LogSlider (options) {
