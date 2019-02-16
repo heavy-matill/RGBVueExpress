@@ -5,9 +5,15 @@
     <div class="line">
         <div><v-switch v-model="selectMultiple"
         :label="`Enabled: ${selectMultiple.toString()}`" /></div>
-        <div><v-btn @click="selectAll">Select all</v-btn></div>
+        <div><v-btn @click="selectAll">Select all<v-icon right dark>mdi-checkbox-multiple-marked-outline</v-icon></v-btn></div>
     </div>
-    <li v-for="(animationData, index) in animationDatas" :key="animationData.id">
+    <div class="line"> 
+        <div><v-select v-bind:items="colors" v-model="adlNames" label="Select or add configuration" autocomplete @keyup.native.enter="addValue"></v-select></div>
+        <div><v-btn @click="selectAll">Save<v-icon right dark>mdi-floppy</v-icon></v-btn></div>
+        <div><v-btn @click="selectAll">Load<v-icon right dark>mdi-cloud-download</v-icon></v-btn></div>
+        <div><v-btn @click="selectAll">Remove<v-icon right dark>mdi-delete</v-icon></v-btn></div>
+    </div>
+          <li v-for="(animationData, index) in animationDatas" :key="animationData.id">
       {{animationData.id}}
       {{index}}
       <Animation :index="index" :id="animationData.id" :showId="showId" :selectMultiple="selectMultiple" :animationData="animationData"
