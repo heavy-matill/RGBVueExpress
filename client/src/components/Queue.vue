@@ -129,7 +129,8 @@ export default {
       p: 72,
       nr: 4,
       br: true,
-      adlNames: ['asd', 'qwe']
+      adlNames: ['asd', 'qwe'],
+      adlName: ""
     }
   },
   components: {
@@ -287,9 +288,9 @@ export default {
       .get('http://localhost:3000/adl')
       .then(res => {
         this.adlNames = []
-        for (let animationDataList of res.data) {
-          this.adlNames.add(animationDataList.name)
-          console.log(animationDataList.name)
+        for (let obj of res.data.data) {
+          this.adlNames.push(obj.name)
+          console.log(obj.name)
         }
       })
   }

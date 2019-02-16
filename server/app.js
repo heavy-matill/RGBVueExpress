@@ -14,6 +14,7 @@ var app = express();
 
 // allow OPTIONS on all resources
 // app.options('*', cors())
+// implemented as middleware
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
