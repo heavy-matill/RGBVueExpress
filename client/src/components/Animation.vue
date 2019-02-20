@@ -172,7 +172,8 @@ export default {
   },
   methods: {
     clickAnimation () {
-      this.animationData.selected = !this.animationData.selected
+      this.unselectAll()
+      this.animationData.selected = true
       this.load()
     },
     load (e) {
@@ -230,6 +231,9 @@ export default {
       if (this.selectMultiple) {
         this.$emit('changeBr', this.animationData.br, this.id)
       }
+    },
+    unselectAll () {
+        this.$emit('unselectAll')
     },
     clickLoad (e) {
       this.load()

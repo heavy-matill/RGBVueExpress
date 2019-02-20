@@ -3,9 +3,8 @@
     <h1>Queue here</h1>
     <h3>Mutliselection</h3>
     <div class="line">
-      <div><v-switch v-model="selectMultiple"
-      :label="`Enabled: ${selectMultiple.toString()}`" /></div>
       <div><v-btn @click="selectAll">Select all<v-icon right dark>mdi-checkbox-multiple-marked-outline</v-icon></v-btn></div>
+      <div><v-btn @click="unselectAll">Unselect all<v-icon right dark>mdi-checkbox-multiple-blank-outline</v-icon></v-btn></div>
     </div>
     <div class="line">
         <div><v-autocomplete v-bind:items="adlNames" v-model="adlNameSelected" label="Select or confirm new with enter" @keyup.native.enter="addAdlName"></v-autocomplete></div>
@@ -14,9 +13,8 @@
         <div><v-btn @click="deleteAdl" :disabled="adlNameSelected === adlNameExtra">Delete<v-icon right dark>mdi-delete</v-icon></v-btn></div>
     </div>
     <li v-for="(animationData, index) in animationDataList" :key="animationData.id">
-      <Animation :index="index" :id="animationData.id" :showId="showId" :selectMultiple="selectMultiple" :animationData="animationData"
-      @selected="select"
-      @unselected="unselect"
+      <Animation :index="index" :id="animationData.id" :showId="showId" :animationData="animationData"
+      @unselectAll="unselectAll"
       @add="add"
       @move="move"
       @remove="remove"
@@ -115,7 +113,6 @@ export default {
         {id: 0, mode: 0, c1: {r: 255, g: 0, b: 0}, c2: {r: 0, g: 255, b: 255}, t: 9, p: 70, nr: 4, br: true, selected: false},
         {id: 1, mode: 1, c1: {r: 0, g: 255, b: 0}, c2: {r: 0, g: 0, b: 255}, t: 50, p: 20, nr: 1, br: true, selected: true}],
       showId: 1,
-      selectMultiple: false,
       nextId: 2,
       selectedId: 0,
       mode: 0,
@@ -137,22 +134,6 @@ export default {
     'sketch-picker': Sketch
   },
   methods: {
-    select (value) {
-      if (this.showId === -1) {
-        this.showId = value
-      }
-    },
-    unselect (value) {
-      if (value === this.showId) {
-        for (let animationData of this.animationDataList) {
-          if (animationData.selected) {
-            this.showId = animationData.id
-            return
-          }
-        }
-        this.showId = -1
-      }
-    },
     add (value) {
       this.animationDataList.splice(value[0], 0, JSON.parse(JSON.stringify(this.animationDataList[value[0]])))
       this.animationDataList[value[0] + 1].id = this.nextId++
@@ -249,16 +230,13 @@ export default {
       }
     },
     selectAll () {
-      this.selectMultiple = true
       for (let animationData of this.animationDataList) {
         animationData.selected = true
       }
     },
     unselectAll () {
-      if (!this.selectMultiple) {
-        for (let animationData of this.animationDataList) {
-          animationData.selected = false
-        }
+      for (let animationData of this.animationDataList) {
+        animationData.selected = false
       }
     },
     printAll () {
