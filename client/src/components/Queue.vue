@@ -1,17 +1,34 @@
 <template>
   <div class="queue">
-    <h1>Queue here</h1>
-    <h3>Mutliselection</h3>
-    <div class="line">
-      <div><v-btn @click="selectAll">Select all<v-icon right dark>mdi-checkbox-multiple-marked-outline</v-icon></v-btn></div>
-      <div><v-btn @click="unselectAll">Unselect all<v-icon right dark>mdi-checkbox-multiple-blank-outline</v-icon></v-btn></div>
-    </div>
-    <div class="line">
-        <div><v-autocomplete v-bind:items="adlNames" v-model="adlNameSelected" label="Select or confirm new with enter" @keyup.native.enter="addAdlName"></v-autocomplete></div>
-        <div><v-btn @click="saveAdl">Save<v-icon right dark>mdi-floppy</v-icon></v-btn></div>
-        <div><v-btn @click="loadAdl" :disabled="adlNameSelected === adlNameExtra">Load<v-icon right dark>mdi-cloud-download</v-icon></v-btn></div>
-        <div><v-btn @click="deleteAdl" :disabled="adlNameSelected === adlNameExtra">Delete<v-icon right dark>mdi-delete</v-icon></v-btn></div>
-    </div>
+    <v-toolbar>
+
+    <h4>Configuration</h4>
+      <v-autocomplete v-bind:items="adlNames" v-model="adlNameSelected"
+                label="Select"
+                hint="Select or create new item"
+                no-data-text="Confirm new with Enter"
+                @keyup.native.enter="addAdlName"
+                ></v-autocomplete>
+
+      <v-divider vertical></v-divider>
+
+      <v-btn color="success" @click="saveAdl"><v-icon left dark>mdi-floppy</v-icon><div class="hidden-sm-and-down">Save</div></v-btn>
+      <v-btn color="warning" @click="loadAdl" :disabled="adlNameSelected === adlNameExtra"><v-icon left dark>mdi-cloud-download</v-icon>Load</v-btn>
+      <v-btn color="info" @click="appendAdl" :disabled="adlNameSelected === adlNameExtra"><v-icon left dark>mdi-library-plus</v-icon>Append</v-btn>
+      <v-btn color="error" @click="deleteAdl" :disabled="adlNameSelected === adlNameExtra"><v-icon left dark>mdi-delete</v-icon>Delete</v-btn>
+
+      <v-divider vertical></v-divider>
+
+      <h4>Select</h4>
+      <v-btn @click="selectAll"><v-icon left dark>mdi-checkbox-multiple-marked-outline</v-icon>All</v-btn>
+      <v-btn @click="unselectAll"><v-icon left dark>mdi-checkbox-multiple-blank-outline</v-icon>None</v-btn>
+
+      <v-divider vertical></v-divider>
+
+      <h4>Quick Commands</h4>
+      <v-btn  class="hidden-sm-and-down" @click="selectAll"><v-icon left dark>mdi-checkbox-multiple-marked-outline</v-icon>All</v-btn>
+      <v-btn @click="unselectAll"><v-icon left dark>mdi-checkbox-multiple-blank-outline</v-icon>None</v-btn>
+    </v-toolbar>
     <li v-for="(animationData, index) in animationDataList" :key="animationData.id">
       <Animation :index="index" :id="animationData.id" :showId="showId" :animationData="animationData"
       @unselectAll="unselectAll"
@@ -269,11 +286,24 @@ export default {
           })
       }
     },
-    async loadAdl () {
+    loadAdl () {
       axios
         .get('http://localhost:3000/adl/' + this.adlIds[this.adlNameSelected])
         .then(res => {
+          for (let animationData of res.data.data.animationDataList) {
+            animationData.id = this.nextId++
+          }
           this.animationDataList = res.data.data.animationDataList
+        })
+    },
+    appendAdl () {
+      axios
+        .get('http://localhost:3000/adl/' + this.adlIds[this.adlNameSelected])
+        .then(res => {
+          for (let animationData of res.data.data.animationDataList) {
+            animationData.id = this.nextId++
+            this.animationDataList.push(animationData)
+          }
         })
     },
     deleteAdl () {
