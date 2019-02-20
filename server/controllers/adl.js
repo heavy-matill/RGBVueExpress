@@ -3,7 +3,7 @@ AnimationDataList = require('../models/adl')
 
 // Handle index actions
 exports.index = function (req, res) {
-    AnimationDataList.get(function (err, adls) {
+    await AnimationDataList.get(async function (err, adls) {
         if (err) {
             res.json({
                 status: "error",
@@ -18,24 +18,23 @@ exports.index = function (req, res) {
     })
 }
 // Handle create AnimationDataList actions
-exports.new = function (req, res) { 
-    var adl = new AnimationDataList();
+exports.new = async function (req, res) { 
+    let adl = new AnimationDataList();
     adl.name = req.body.name ? req.body.name : adl.name
     adl.animationDataList = req.body.animationDataList
 // save the AnimationDataList and check for errors
-    adl.save(function (err) {
-        if (err) {
-            res.json(err)
-        }
+    try{    
+        let newAdl = await adl.save()
         res.json({
-            message: 'New AnimationDataList created!',
-            data: adl
-        });
-    });
-};
+            message: 'New AnimationDataList created!' + err,
+            data: newAdl})
+    } catch (err) {
+        res.json(err)
+    }
+}
 // Handle view AnimationDataList info
 exports.view = function (req, res) {
-    AnimationDataList.findById(req.params.id, function (err, adl) {
+    await AnimationDataList.findById(req.params.id, async function (err, adl) {
         if (err) {
             res.send(err)
         }
@@ -47,14 +46,14 @@ exports.view = function (req, res) {
 }
 // Handle update AnimationDataList info
 exports.update = function (req, res) {
-    AnimationDataList.findById(req.params.id, function (err, adl) {
+    await AnimationDataList.findById(req.params.id, async function (err, adl) {
         if (err){
             res.send(err)
         }
         adl.name = req.body.name ? req.body.name : adl.name
         adl.animationDataList = req.body.animationDataList ? req.body.animationDataList : adl.animationDataList
 // save the AnimationDataList and check for errors
-        adl.save(function (err) {
+        adl.save(async function (err) {
             if (err) {
                 res.json(err)
             }
@@ -67,9 +66,9 @@ exports.update = function (req, res) {
 }
 // Handle delete AnimationDataList
 exports.delete = function (req, res) {
-    AnimationDataList.remove({
+    await AnimationDataList.remove({
         _id: req.params.id
-    }, function (err, adl) {
+    }, async function (err, adl) {
         if (err) {
             res.send(err)
         }

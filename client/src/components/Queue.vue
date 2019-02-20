@@ -8,12 +8,12 @@
         <div><v-btn @click="selectAll">Select all<v-icon right dark>mdi-checkbox-multiple-marked-outline</v-icon></v-btn></div>
     </div>
     <div class="line">
-        <div><v-select v-bind:items="adlNames" v-model="adlName" label="Select or add configuration" autocomplete @keyup.native.enter="addValue"></v-select></div>
-        <div><v-btn @click="printAll">Save<v-icon right dark>mdi-floppy</v-icon></v-btn></div>
-        <div><v-btn @click="selectAll">Load<v-icon right dark>mdi-cloud-download</v-icon></v-btn></div>
-        <div><v-btn @click="selectAll">Remove<v-icon right dark>mdi-delete</v-icon></v-btn></div>
+        <div><v-autocomplete v-bind:items="adlNames" v-model="adlNameSelected" label="Select or confirm new with enter" @keyup.native.enter="addAdlName"></v-autocomplete></div>
+        <div><v-btn @click="saveAdl">Save<v-icon right dark>mdi-floppy</v-icon></v-btn></div>
+        <div><v-btn @click="loadAdl" :disabled="adlNameSelected === adlNameExtra">Load<v-icon right dark>mdi-cloud-download</v-icon></v-btn></div>
+        <div><v-btn @click="deleteAdl" :disabled="adlNameSelected === adlNameExtra">Delete<v-icon right dark>mdi-delete</v-icon></v-btn></div>
     </div>
-          <li v-for="(animationData, index) in animationDatas" :key="animationData.id">
+          <li v-for="(animationData, index) in animationDataList" :key="animationData.id">
       {{animationData.id}}
       {{index}}
       <Animation :index="index" :id="animationData.id" :showId="showId" :selectMultiple="selectMultiple" :animationData="animationData"
@@ -113,7 +113,7 @@ export default {
   name: 'Queue',
   data () {
     return {
-      animationDatas: [
+      animationDataList: [
         {id: 0, mode: 0, c1: {r: 255, g: 0, b: 0}, c2: {r: 0, g: 255, b: 255}, t: 9, p: 70, nr: 4, br: true, selected: false},
         {id: 1, mode: 1, c1: {r: 0, g: 255, b: 0}, c2: {r: 0, g: 0, b: 255}, t: 50, p: 20, nr: 1, br: true, selected: true}],
       showId: 1,
@@ -129,8 +129,9 @@ export default {
       p: 72,
       nr: 4,
       br: true,
-      adlNames: ['asd', 'qwe'],
-      adlName: ""
+      adlNameExtra: '',
+      adlNameSelected: '',
+      adlIds: {}
     }
   },
   components: {
@@ -145,7 +146,7 @@ export default {
     },
     unselect (value) {
       if (value === this.showId) {
-        for (let animationData of this.animationDatas) {
+        for (let animationData of this.animationDataList) {
           if (animationData.selected) {
             this.showId = animationData.id
             return
@@ -155,22 +156,22 @@ export default {
       }
     },
     add (value) {
-      this.animationDatas.splice(value[0], 0, JSON.parse(JSON.stringify(this.animationDatas[value[0]])))
-      this.animationDatas[value[0] + 1].id = this.nextId++
+      this.animationDataList.splice(value[0], 0, JSON.parse(JSON.stringify(this.animationDataList[value[0]])))
+      this.animationDataList[value[0] + 1].id = this.nextId++
     },
     move (value) {
       // check if element elements are out of bounds
-      if (!(((value[0] + value[1]) < 0) || ((value[0] + value[1]) >= this.animationDatas.length))) {
+      if (!(((value[0] + value[1]) < 0) || ((value[0] + value[1]) >= this.animationDataList.length))) {
         // switch elements
-        let tempAnimationData = this.animationDatas[value[0]]
-        this.animationDatas[value[0]] = this.animationDatas[value[0] + value[1]]
-        this.animationDatas[value[0] + value[1]] = tempAnimationData
+        let tempAnimationData = this.animationDataList[value[0]]
+        this.animationDataList[value[0]] = this.animationDataList[value[0] + value[1]]
+        this.animationDataList[value[0] + value[1]] = tempAnimationData
         this.$forceUpdate()
       }
     },
     remove (value) {
-      if (this.animationDatas.length > 1) {
-        this.animationDatas.splice(value, 1)
+      if (this.animationDataList.length > 1) {
+        this.animationDataList.splice(value, 1)
       }
     },
     load (animationData) {
@@ -185,7 +186,7 @@ export default {
       this.br = animationData.br
     },
     changeC1 () {
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         if (animationData.selected) {
           if (this.cp1.rgba) {
             animationData.c1.r = this.cp1.rgba.r
@@ -199,7 +200,7 @@ export default {
       this.$forceUpdate()
     },
     changeC2 () {
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         if (animationData.selected) {
           if (this.cp2.rgba) {
             animationData.c2.r = this.cp2.rgba.r
@@ -213,7 +214,7 @@ export default {
       this.$forceUpdate()
     },
     changeMode () {
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         if (animationData.selected) {
           animationData.mode = this.mode
         }
@@ -221,7 +222,7 @@ export default {
       this.$forceUpdate()
     },
     changeT () {
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         if (animationData.selected) {
           animationData.t = this.t
         }
@@ -229,21 +230,21 @@ export default {
       this.$forceUpdate()
     },
     changeP () {
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         if (animationData.selected) {
           animationData.p = this.p
         }
       }
     },
     changeNr () {
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         if (animationData.selected) {
           animationData.nr = this.nr
         }
       }
     },
     changeBr () {
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         if (animationData.selected) {
           animationData.br = this.br
         }
@@ -251,18 +252,70 @@ export default {
     },
     selectAll () {
       this.selectMultiple = true
-      for (let animationData of this.animationDatas) {
+      for (let animationData of this.animationDataList) {
         animationData.selected = true
       }
     },
     unselectAll () {
       if (!this.selectMultiple) {
-        for (let animationData of this.animationDatas) {
+        for (let animationData of this.animationDataList) {
           animationData.selected = false
         }
       }
     },
     printAll () {
+    },
+    getAdls () {
+      axios
+        .get('http://localhost:3000/adl')
+        .then(res => {
+          this.adlIds = {}
+          for (let obj of res.data.data) {
+            this.adlIds[obj.name] = obj._id
+          }
+        })
+    },
+    saveAdl () {
+      if (Object.keys(this.adlIds).indexOf(this.adlNameSelected) >= 0) {
+        axios
+          .put('http://localhost:3000/adl/' + this.adlIds[this.adlNameSelected], {
+            animationDataList: this.animationDataList
+          })
+      } else {
+        axios
+          .post('http://localhost:3000/adl', {
+            name: this.adlNameSelected,
+            animationDataList: this.animationDataList
+          })
+          .then(res => {
+            this.adlNameExtra = ''
+            this.getAdls()
+          })
+      }
+    },
+    async loadAdl () {
+      axios
+        .get('http://localhost:3000/adl/' + this.adlIds[this.adlNameSelected])
+        .then(res => {
+          this.animationDataList = res.data.data.animationDataList
+        })
+    },
+    deleteAdl () {
+      axios
+        .delete('http://localhost:3000/adl/' + this.adlIds[this.adlNameSelected])
+        .then(res => {
+          this.getAdls()
+        })
+    },
+    addAdlName (e) {
+      // if the element does not exists in adldls keys
+      if (Object.keys(this.adlIds).indexOf(e.target.value) < 0) {
+        // set it as adlNameExtra
+        this.adlNameExtra = e.target.value
+        this.adlNameSelected = e.target.value
+      } else {
+        this.adlNameExtra = ''
+      }
     }
   },
   computed: {
@@ -272,6 +325,15 @@ export default {
       },
       set: function (newPosT) {
         this.t = Math.round(logslDur.value(newPosT) * 100) / 100
+      }
+    },
+    adlNames: {
+      get: function () {
+        let adlNamesTemp = Object.keys(this.adlIds)
+        if (this.adlNameExtra !== '') {
+          adlNamesTemp.push(this.adlNameExtra)
+        }
+        return adlNamesTemp
       }
     }
   },
@@ -284,15 +346,7 @@ export default {
     }
   },
   mounted () {
-    axios
-      .get('http://localhost:3000/adl')
-      .then(res => {
-        this.adlNames = []
-        for (let obj of res.data.data) {
-          this.adlNames.push(obj.name)
-          console.log(obj.name)
-        }
-      })
+    this.getAdls()
   }
 }
 function LogSlider (options) {
