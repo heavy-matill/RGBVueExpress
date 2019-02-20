@@ -3,9 +3,9 @@
     <h1>Queue here</h1>
     <h3>Mutliselection</h3>
     <div class="line">
-        <div><v-switch v-model="selectMultiple"
-        :label="`Enabled: ${selectMultiple.toString()}`" /></div>
-        <div><v-btn @click="selectAll">Select all<v-icon right dark>mdi-checkbox-multiple-marked-outline</v-icon></v-btn></div>
+      <div><v-switch v-model="selectMultiple"
+      :label="`Enabled: ${selectMultiple.toString()}`" /></div>
+      <div><v-btn @click="selectAll">Select all<v-icon right dark>mdi-checkbox-multiple-marked-outline</v-icon></v-btn></div>
     </div>
     <div class="line">
         <div><v-autocomplete v-bind:items="adlNames" v-model="adlNameSelected" label="Select or confirm new with enter" @keyup.native.enter="addAdlName"></v-autocomplete></div>
@@ -13,9 +13,7 @@
         <div><v-btn @click="loadAdl" :disabled="adlNameSelected === adlNameExtra">Load<v-icon right dark>mdi-cloud-download</v-icon></v-btn></div>
         <div><v-btn @click="deleteAdl" :disabled="adlNameSelected === adlNameExtra">Delete<v-icon right dark>mdi-delete</v-icon></v-btn></div>
     </div>
-          <li v-for="(animationData, index) in animationDataList" :key="animationData.id">
-      {{animationData.id}}
-      {{index}}
+    <li v-for="(animationData, index) in animationDataList" :key="animationData.id">
       <Animation :index="index" :id="animationData.id" :showId="showId" :selectMultiple="selectMultiple" :animationData="animationData"
       @selected="select"
       @unselected="unselect"

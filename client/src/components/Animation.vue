@@ -1,14 +1,11 @@
 <template>
-  <div class="animation">
-    <h1 v-once>ID: {{id}}</h1>
-    <div class="random"
-      :style="{backgroundImage: backgroundImage,
-      borderStyle: borderStyle,
-      display: 'inline-block',
-      borderWidth: 'medium'}"
-    >
-    <div v-on:click="click">
-      <table>
+  <div class="animation" v-on:click="clickAnimation"
+    :style="{backgroundImage: backgroundImage,
+    borderStyle: borderStyle,
+    display: 'inline-block',
+    borderWidth: 'medium'}">
+    <div class="upperAnimation">
+      <table class="floatLeft">
         <tr>
           <td>
             <v-icon small>mdi-watch</v-icon>{{animationData.t}}
@@ -26,18 +23,28 @@
           </td>
         </tr>
       </table>
+       <table class="floatRight">
+        <tr>
+          <td>
+            <v-icon v-if="!this.animationData.selected" @click="clickSelect">mdi-checkbox-blank-outline</v-icon>
+            <v-icon v-if="this.animationData.selected" @click="clickSelect">mdi-checkbox-marked-outline</v-icon>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <v-icon @click="clickLoad">mdi-download</v-icon>
+          </td>
+        </tr>
+      </table>
     </div>
-      <table>
+    <div class="lowerAnimation">
+      <table class="distributeEvenly">
         <tr>
           <td>
             <v-icon @click="addAnimation(0)">mdi-plus</v-icon>
           </td>
           <td>
             <v-icon @click="moveAnimation(-1)">mdi-arrow-left</v-icon>
-          </td>
-          <td>
-            <v-icon v-if="!this.animationData.selected" @click="select()">mdi-checkbox-blank-outline</v-icon>
-            <v-icon v-if="this.animationData.selected" @click="unselect()">mdi-checkbox-marked-outline</v-icon>
           </td>
           <td>
             <v-icon @click="removeAnimation()">mdi-delete</v-icon>
@@ -50,11 +57,11 @@
           </td>
         </tr>
       </table>
+    </div>
     <!--class="animationElement animationElementMarked"
       onclick="loadAnimation(1)"
       style="background-image: linear-gradient(to right, rgb(255, 0, 0) 20%, rgb(0, 0, 255) 80%)"
       id="animationElement1" -->
-    </div>
   </div>
 </template>
 
@@ -164,21 +171,30 @@ export default {
     }
   },
   methods: {
-    click () {
+    clickAnimation () {
       this.animationData.selected = !this.animationData.selected
       this.load()
     },
-    load () {
+    load (e) {
       this.$emit('load', this.animationData)
     },
-    addAnimation (position) {
+    addAnimation (position, e) {
       this.$emit('add', [this.index, position])
+      if (!e) var e = window.event
+      e.cancelBubble = true
+      if (e.stopPropagation) e.stopPropagation()
     },
-    moveAnimation (position) {
+    moveAnimation (position, e) {
       this.$emit('move', [this.index, position])
+      if (!e) var e = window.event
+      e.cancelBubble = true
+      if (e.stopPropagation) e.stopPropagation()
     },
-    removeAnimation (position) {
+    removeAnimation (position, e) {
       this.$emit('remove', this.index)
+      if (!e) var e = window.event
+      e.cancelBubble = true
+      if (e.stopPropagation) e.stopPropagation()
     },
     changeC1 () {
       if (this.selectMultiple) {
@@ -215,11 +231,17 @@ export default {
         this.$emit('changeBr', this.animationData.br, this.id)
       }
     },
-    select () {
-      this.animationData.selected = true
+    clickLoad (e) {
+      this.load()
+      if (!e) var e = window.event
+      e.cancelBubble = true
+      if (e.stopPropagation) e.stopPropagation()
     },
-    unselect () {
-      this.animationData.selected = false
+    clickSelect (e) {
+      this.animationData.selected = !this.animationData.selected
+      if (!e) var e = window.event
+      e.cancelBubble = true
+      if (e.stopPropagation) e.stopPropagation()
     }
   }
 }
@@ -260,6 +282,12 @@ var logslDur = new LogSlider({maxpos: 100, minval: 0.01, maxval: 65.535})
 .animation table {
   border-collapse: separate; /* Or do nothing, this is default */
   border-spacing: 5px; /* Only works if border-collapse is separate */
+}
+.floatLeft {
+  float: left
+}
+.floatRight {
+  float: right
 }
 
 </style>
