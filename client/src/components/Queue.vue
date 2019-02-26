@@ -413,7 +413,6 @@ LogSlider.prototype = {
   }
 }
 var logslDur = new LogSlider({maxpos: 100, minval: 0.01, maxval: 65.535})
-// var logslRep = new LogSlider({maxpos: 100, minval: 0, maxval: 256}) */
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -460,8 +459,9 @@ a {
 .configuration .v-card  {
   padding: 5px;
 }
-.vc-sketch-saturation-wrap * {
-  padding-bottom: 35% !important;
+.settings .color-settings .vc-sketch-saturation-wrap {
+  padding-bottom: 35%;
+  /* TODO: Check if you can change css of color picker or how it is declared so you can overwrite */
 }
 .vc-sketch {
   border-radius: None;
