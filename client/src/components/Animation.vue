@@ -72,12 +72,7 @@ export default {
     return {
       // posT: 10,
       pGradient: 0,
-      pGradient2: 0,
-      c3: {
-        r: 0,
-        g: 0,
-        b: 0
-      }
+      pGradient2: 0
     }
   },
   props: {
@@ -97,11 +92,6 @@ export default {
         g: Number,
         b: Number
       },
-      c3: {
-        r: Number,
-        g: Number,
-        b: Number
-      },
       t: Number,
       p: Number,
       nr: Number,
@@ -111,11 +101,17 @@ export default {
   },
   computed: {
     backgroundImage: function () {
+      let tempC1String
+      if (this.animationData.mode >= 2) {
+        tempC1String = '000000'
+      } else {
+        tempC1String = this.c1String
+      }
       switch (parseInt(this.animationData.mode) % 2) {
         case 0:
-          return 'linear-gradient(to right, #' + this.c1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 0)'
+          return 'linear-gradient(to right, #' + tempC1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 0)'
         case 1:
-          return 'linear-gradient(to right, #' + this.c1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 100%)'
+          return 'linear-gradient(to right, #' + tempC1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 100%)'
       }
     },
     c1String: function () {
@@ -123,9 +119,6 @@ export default {
     },
     c2String: function () {
       return this.animationData.c2.r.toString(16).padStart(2, '0') + this.animationData.c2.g.toString(16).padStart(2, '0') + this.animationData.c2.b.toString(16).padStart(2, '0')
-    },
-    modeChange: function () {
-      return this.animationData.mode > 1
     },
     borderStyle: function () {
       switch (this.animationData.selected) {
@@ -153,15 +146,6 @@ export default {
     }
   },
   watch: {
-    modeChange: function () {
-      let ctemp = this.animationData.c2
-      this.animationData.c2 = this.c3
-      this.c3 = ctemp
-      if (this.modeChange) {
-        this.animationData.c2 = {r: 0, g: 0, b: 0}
-        this.c2 = {r: 0, g: 0, b: 0}
-      }
-    },
     selected: function () {
       if (this.animationData.selected) {
         this.$emit('selected', this.id)
@@ -181,18 +165,21 @@ export default {
     },
     addAnimation (position, e) {
       this.$emit('add', [this.index, position])
+      // eslint-disable-next-line
       if (!e) var e = window.event
       e.cancelBubble = true
       if (e.stopPropagation) e.stopPropagation()
     },
     moveAnimation (position, e) {
       this.$emit('move', [this.index, position])
+      // eslint-disable-next-line
       if (!e) var e = window.event
       e.cancelBubble = true
       if (e.stopPropagation) e.stopPropagation()
     },
     removeAnimation (position, e) {
       this.$emit('remove', this.index)
+      // eslint-disable-next-line
       if (!e) var e = window.event
       e.cancelBubble = true
       if (e.stopPropagation) e.stopPropagation()
@@ -233,16 +220,18 @@ export default {
       }
     },
     unselectAll () {
-        this.$emit('unselectAll')
+      this.$emit('unselectAll')
     },
     clickLoad (e) {
       this.load()
+      // eslint-disable-next-line
       if (!e) var e = window.event
       e.cancelBubble = true
       if (e.stopPropagation) e.stopPropagation()
     },
     clickSelect (e) {
       this.animationData.selected = !this.animationData.selected
+      // eslint-disable-next-line
       if (!e) var e = window.event
       e.cancelBubble = true
       if (e.stopPropagation) e.stopPropagation()

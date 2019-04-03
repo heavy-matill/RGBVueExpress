@@ -1,11 +1,11 @@
 <template>
   <div class="queue">
-    <v-container class="configuration" 
+    <v-container class="configuration"
       fluid
-      grid-list-lg> 
+      grid-list-lg>
       <h2>Configuration</h2>
-      <v-card> 
-        <v-layout row wrap> 
+      <v-card>
+        <v-layout row wrap>
           <v-flex>
             <h3>Save and load</h3>
             <v-layout row wrap>
@@ -44,14 +44,17 @@
             </v-layout>
           </v-flex>
 
-
-
-        </v-layout>  
-      </v-card>   
+        </v-layout>
+      </v-card>
 
       <h2>Queue</h2>
-      <v-card> 
-        <li v-for="(animationData, index) in animationDataList" :key="animationData.id">
+      <v-card>
+        <li v-for="(animationData, index) in animationDataList" :key="animationData.id+
+        animationData.c1+
+        animationData.c2+
+        animationData.t+
+        animationData.selected+
+        animationData.mode">
           <Animation :index="index" :id="animationData.id" :showId="showId" :animationData="animationData"
           @unselectAll="unselectAll"
           @add="add"
@@ -60,9 +63,9 @@
           @load="load"
           />
         </li>
-      </v-card> 
-      <h2>Settings</h2> 
-      <v-card>  
+      </v-card>
+      <h2>Settings</h2>
+      <v-card>
         <table class="color-settings"><tr>
           <td>
             <h3>Color 1</h3>
@@ -80,8 +83,8 @@
             </td>
           </tr>
         </table>
-      </v-card>  
-      <v-card>  
+      </v-card>
+      <v-card>
         <h3>Mode</h3>
         <v-radio-group v-model="mode" row @change="changeMode">
           <v-radio label="Jump" value="0"/>
@@ -89,8 +92,8 @@
           <v-radio label="Strobe" value="2"/>
           <v-radio label="Pulse" value="3"/>
         </v-radio-group>
-      </v-card>  
-      <v-card>  
+      </v-card>
+      <v-card>
         <h3>Configuration</h3>
         <v-layout row wrap>
           <v-flex xs8>
@@ -144,15 +147,15 @@
               type="number"/>
           </v-flex>
           <v-flex xs12>
-            <v-switch 
-              v-model="br" 
-              prepend-icon="mdi-reload" 
+            <v-switch
+              v-model="br"
+              prepend-icon="mdi-reload"
               :label="`Re-Queue: ${br.toString()}`"/>
           </v-flex>
         </v-layout>
-      </v-card>    
+      </v-card>
     </v-container>
-  </div> 
+  </div>
 </template>
 
 <script>
@@ -231,7 +234,7 @@ export default {
           }
         }
       }
-      this.$forceUpdate()
+      // this.$forceUpdate()
     },
     changeC2 () {
       for (let animationData of this.animationDataList) {
@@ -245,7 +248,7 @@ export default {
           }
         }
       }
-      this.$forceUpdate()
+      // this.$forceUpdate() unneccessary because colors are key: in v-for
     },
     changeMode () {
       for (let animationData of this.animationDataList) {
@@ -253,7 +256,7 @@ export default {
           animationData.mode = this.mode
         }
       }
-      this.$forceUpdate()
+      // this.$forceUpdate() unneccessary because mode is key: in v-for
     },
     changeT () {
       for (let animationData of this.animationDataList) {
@@ -261,7 +264,7 @@ export default {
           animationData.t = this.t
         }
       }
-      this.$forceUpdate()
+      // this.$forceUpdate() unneccessary because t is key: in v-for
     },
     changeP () {
       for (let animationData of this.animationDataList) {
