@@ -31,8 +31,48 @@ const animationDataSchema = mongoose.Schema({
     min: 0,
     max: 3
   },
-  c1: colorSchema,
-  c2: colorSchema,
+  //c1: colorSchema, //nesting not available in mongoose ~4.0.0
+  //c2: colorSchema,
+  c1: {
+    r: {
+      type: Number,
+      default: 127,
+      min: 0,
+      max: 255
+    },
+    g: {
+      type: Number,
+      default: 127,
+      min: 0,
+      max: 255
+    },
+    b: {
+      type: Number,
+      default: 127,
+      min: 0,
+      max: 255
+    }
+  },
+  c2: {
+    r: {
+      type: Number,
+      default: 127,
+      min: 0,
+      max: 255
+    },
+    g: {
+      type: Number,
+      default: 127,
+      min: 0,
+      max: 255
+    },
+    b: {
+      type: Number,
+      default: 127,
+      min: 0,
+      max: 255
+    }
+  },
   t: {
     type: Number,
     default: 1,

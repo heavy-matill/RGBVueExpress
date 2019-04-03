@@ -2,7 +2,7 @@
 AnimationDataList = require('../models/adl')
 
 // Handle index actions
-exports.index = function (req, res) {
+exports.index = async function (req, res) {
     await AnimationDataList.get(async function (err, adls) {
         if (err) {
             res.json({
@@ -33,7 +33,7 @@ exports.new = async function (req, res) {
     }
 }
 // Handle view AnimationDataList info
-exports.view = function (req, res) {
+exports.view = async function (req, res) {
     await AnimationDataList.findById(req.params.id, async function (err, adl) {
         if (err) {
             res.send(err)
@@ -45,7 +45,7 @@ exports.view = function (req, res) {
     })
 }
 // Handle update AnimationDataList info
-exports.update = function (req, res) {
+exports.update = async function (req, res) {
     await AnimationDataList.findById(req.params.id, async function (err, adl) {
         if (err){
             res.send(err)
@@ -65,7 +65,7 @@ exports.update = function (req, res) {
     })
 }
 // Handle delete AnimationDataList
-exports.delete = function (req, res) {
+exports.delete = async function (req, res) {
     await AnimationDataList.remove({
         _id: req.params.id
     }, async function (err, adl) {
