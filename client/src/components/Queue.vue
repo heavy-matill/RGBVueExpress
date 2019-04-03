@@ -86,7 +86,7 @@
       </v-card>
       <v-card>
         <h3>Mode</h3>
-        <v-radio-group v-model="mode" row @change="changeMode">
+        <v-radio-group v-model="modeString" row @change="changeMode">
           <v-radio label="Jump" value="0"/>
           <v-radio label="Fade" value="1"/>
           <v-radio label="Strobe" value="2"/>
@@ -381,6 +381,14 @@ export default {
           adlNamesTemp.push(this.adlNameExtra)
         }
         return adlNamesTemp
+      }
+    },
+    modeString: {
+      get: function () {
+        return String(this.mode)
+      },
+      set: function () {
+        this.mode = Number(this.modeString)
       }
     }
   },

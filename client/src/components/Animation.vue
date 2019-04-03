@@ -101,17 +101,17 @@ export default {
   },
   computed: {
     backgroundImage: function () {
-      let tempC1String
+      let tempC2String
       if (this.animationData.mode >= 2) {
-        tempC1String = '000000'
+        tempC2String = '000000'
       } else {
-        tempC1String = this.c1String
+        tempC2String = this.c2String
       }
       switch (parseInt(this.animationData.mode) % 2) {
         case 0:
-          return 'linear-gradient(to right, #' + tempC1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 0)'
+          return 'linear-gradient(to right, #' + this.c1String + ' ' + this.animationData.p + '%, #' + tempC2String + ' 0)'
         case 1:
-          return 'linear-gradient(to right, #' + tempC1String + ' ' + this.animationData.p + '%, #' + this.c2String + ' 100%)'
+          return 'linear-gradient(to right, #' + this.c1String + ' ' + this.animationData.p + '%, #' + tempC2String + ' 100%)'
       }
     },
     c1String: function () {
