@@ -3,6 +3,98 @@
     <v-container class="configuration"
       fluid
       grid-list-lg>
+      <h2>Quick actions</h2>
+      <v-card>
+        <v-layout row wrap>
+
+          <v-flex>
+            <h3>Quick-Mode</h3>
+            <v-radio-group v-model="modeString" row @change="changeMode">
+              <v-radio label="Jump" value="0"/>
+              <v-radio label="Fade" value="1"/>
+              <v-radio label="Strobe" value="2"/>
+              <v-radio label="Pulse" value="3"/>
+            </v-radio-group>
+          </v-flex>
+
+          <v-flex>
+            <h3>Quick-Colors</h3>
+            <v-radio-group v-model="quickColorString" row>
+              <v-radio label="RGB" value="RGB"/>
+              <v-radio label="Random" value="Random"/>
+            </v-radio-group>
+          </v-flex>
+
+          <v-flex>
+            <h3>Synchronization</h3>
+            <v-layout align-left justify-left row fill-height>
+              <v-btn @click="quickStartRandom"><v-icon left dark>mdi-shuffle-variant</v-icon>Random</v-btn>
+              <v-btn @click="quickStartSynchronous"><v-icon left dark>mdi-shuffle-disabled</v-icon>Synced</v-btn>
+            </v-layout>
+          </v-flex>
+
+        </v-layout>
+      </v-card>
+
+      <h2>General settings</h2>
+      <v-card>
+        <v-layout row wrap>
+          <v-flex>
+            <div class="sliderRow">
+              <v-slider
+                v-model="brightness"
+                label="Brightness"
+                min=0
+                max=100
+                step=5
+                prepend-icon="mdi-brightness-6"/>
+              <v-text-field
+                class="mt-0"
+                v-model="brightness"
+                hide-details
+                single-line
+                suffix="%"
+                min=0
+                max=100
+                step=5
+                type="number"/>
+            </div>
+          </v-flex>
+
+          <v-flex>
+            <div class="sliderRow">
+              <v-slider
+                v-model="speed"
+                label="Speed"
+                min=25
+                max=250
+                step=5
+                prepend-icon="mdi-speedometer"/>
+              <v-text-field
+                class="mt-0"
+                v-model="speed"
+                hide-details
+                single-line
+                suffix="%"
+                min=25
+                max=250
+                step=5
+                type="number"/>
+            </div>
+          </v-flex>
+
+          <v-flex>
+            <h3>Controls</h3>
+            <v-layout align-left justify-left row fill-height>
+              <v-btn color="success" @click="playAnimation"><v-icon left dark>mdi-play</v-icon>Play</v-btn>
+              <v-btn color="warning" @click="pauseAnimation"><v-icon left dark>mdi-pause</v-icon>Pause</v-btn>
+              <v-btn color="error" @click="stopAnimation"><v-icon left dark>mdi-stop</v-icon>Stop</v-btn>
+            </v-layout>
+          </v-flex>
+
+        </v-layout>
+      </v-card>
+
       <h2>Configuration</h2>
       <v-card>
         <v-layout row wrap>
@@ -27,7 +119,12 @@
               </v-flex>
             </v-layout>
           </v-flex>
+        </v-layout>
+      </v-card>
 
+      <h2>Queue</h2>
+      <v-card>
+        <v-layout row wrap>
           <v-flex>
             <h3>Select</h3>
             <v-layout align-left justify-left row fill-height>
@@ -37,18 +134,14 @@
           </v-flex>
 
           <v-flex>
-            <h3>Commands</h3>
+            <h3>Queue commands</h3>
             <v-layout align-left justify-left row fill-height>
-              <v-btn @click="selectAll"><v-icon left dark>mdi-checkbox-multiple-marked-outline</v-icon>All</v-btn>
-              <v-btn @click="unselectAll"><v-icon left dark>mdi-checkbox-multiple-blank-outline</v-icon>None</v-btn>
+              <v-btn @click="sendQueue"><v-icon left dark>mdi-file-move</v-icon>Send</v-btn>
+              <v-btn @click="appendQueue"><v-icon left dark>mdi-file-plus</v-icon>Append</v-btn>
+              <v-btn @click="resetQueue"><v-icon left dark>mdi-file-outline</v-icon>Reset</v-btn>
             </v-layout>
           </v-flex>
-
         </v-layout>
-      </v-card>
-
-      <h2>Queue</h2>
-      <v-card>
         <li v-for="(animationData, index) in animationDataList" :key="animationData.id+
         animationData.c1+
         animationData.c2+
@@ -95,64 +188,58 @@
       </v-card>
       <v-card>
         <h3>Configuration</h3>
-        <v-layout row wrap>
-          <v-flex xs8>
-            <v-slider
-              v-model="t"
-              label="Duration"
-              prepend-icon="mdi-watch"
-              @change="changeT"/>
-          </v-flex>
-          <v-flex shrink style="width: 120px">
-            <v-text-field
-              class="mt-0"
-              v-model="t"
-              hide-details
-              single-line
-              @change="changeT"
-              suffix="s"
-              type="number"/>
-          </v-flex>
-          <v-flex xs8>
-            <v-slider
-              v-model="p"
-              label="On-Time"
-              prepend-icon="mdi-percent"
-              @change="changeP"/>
-          </v-flex>
-          <v-flex shrink style="width: 120px">
-            <v-text-field
-              class="mt-0"
-              v-model="p"
-              hide-details
-              single-line
-              @change="changeP"
-              suffix="%"
-              type="number"/>
-          </v-flex>
-          <v-flex xs8>
-            <v-slider
-              v-model="nr"
-              label="Repetitions"
-              prepend-icon="mdi-repeat"
-              @change="changeNr"/>
-          </v-flex>
-          <v-flex shrink style="width: 120px">
-            <v-text-field
-              class="mt-0"
-              v-model="nr"
-              hide-details
-              single-line
-              @change="changeNr"
-              type="number"/>
-          </v-flex>
-          <v-flex xs12>
-            <v-switch
-              v-model="br"
-              prepend-icon="mdi-reload"
-              :label="`Re-Queue: ${br.toString()}`"/>
-          </v-flex>
-        </v-layout>
+        <div class="sliderRow">
+          <v-slider
+            v-model="t"
+            label="Duration"
+            prepend-icon="mdi-watch"
+            @change="changeT"
+            style="width: 300px;"/>
+          <v-text-field
+            class="mt-0"
+            v-model="t"
+            hide-details
+            single-line
+            @change="changeT"
+            suffix="s"
+            type="number"
+            style="width: 100px;"/>
+        </div>
+        <div class="sliderRow">
+          <v-slider
+            v-model="p"
+            label="On-Time"
+            prepend-icon="mdi-percent"
+            @change="changeP"/>
+          <v-text-field
+            class="mt-0"
+            v-model="p"
+            hide-details
+            single-line
+            @change="changeP"
+            suffix="%"
+            type="number"/>
+        </div>
+        <div class="sliderRow">
+          <v-slider
+            v-model="nr"
+            label="Repetitions"
+            prepend-icon="mdi-repeat"
+            @change="changeNr"/>
+          <v-text-field
+            class="mt-0"
+            v-model="nr"
+            hide-details
+            single-line
+            @change="changeNr"
+            type="number"/>
+        </div>
+        <div class="sliderRow">
+          <v-switch
+            v-model="br"
+            prepend-icon="mdi-reload"
+            :label="`Re-Queue: ${br.toString()}`"/>
+        </div>
       </v-card>
     </v-container>
   </div>
@@ -184,7 +271,10 @@ export default {
       br: true,
       adlNameExtra: '',
       adlNameSelected: '',
-      adlIds: {}
+      adlIds: {},
+      quickColorString: 'RGB',
+      brightness: 100,
+      speed: 100
     }
   },
   components: {
@@ -479,6 +569,19 @@ a {
   box-shadow: None;
   width: 90%;
   background-color: None;
+}
+.sliderRow {
+  display: inline-block;
+  width:100%;
+}
+.sliderRow .v-input--slider{
+  float: left;
+  width: 300px;
+  margin-right: 20px;
+}
+.sliderRow .v-text-field{
+  float: left;
+  width: 80px;
 }
 /*
 .vc-sketch-alpha-wrap {
