@@ -9,7 +9,7 @@
 
           <v-flex>
             <h3>Quick-Mode</h3>
-            <v-radio-group v-model="modeString" row @change="changeMode">
+            <v-radio-group v-model="modeString" row>
               <v-radio label="Jump" value="0"/>
               <v-radio label="Fade" value="1"/>
               <v-radio label="Strobe" value="2"/>
@@ -28,8 +28,8 @@
           <v-flex>
             <h3>Synchronization</h3>
             <v-layout align-left justify-left row fill-height>
-              <v-btn @click="quickStartRandom"><v-icon left dark>mdi-shuffle-variant</v-icon>Random</v-btn>
               <v-btn @click="quickStartSynchronous"><v-icon left dark>mdi-shuffle-disabled</v-icon>Synced</v-btn>
+              <v-btn @click="quickStartRandom"><v-icon left dark>mdi-shuffle-variant</v-icon>Random</v-btn>
             </v-layout>
           </v-flex>
 
@@ -86,7 +86,7 @@
           <v-flex>
             <h3>Controls</h3>
             <v-layout align-left justify-left row fill-height>
-              <v-btn color="success" @click="playAnimation"><v-icon left dark>mdi-play</v-icon>Play</v-btn>
+              <v-btn color="success" @click="startAnimation"><v-icon left dark>mdi-play</v-icon>Start</v-btn>
               <v-btn color="warning" @click="pauseAnimation"><v-icon left dark>mdi-pause</v-icon>Pause</v-btn>
               <v-btn color="error" @click="stopAnimation"><v-icon left dark>mdi-stop</v-icon>Stop</v-btn>
             </v-layout>
@@ -377,17 +377,24 @@ export default {
         }
       }
     },
-    selectAll () {
-      for (let animationData of this.animationDataList) {
-        animationData.selected = true
-      }
-    },
-    unselectAll () {
-      for (let animationData of this.animationDataList) {
-        animationData.selected = false
-      }
-    },
     printAll () {
+    },
+    quickStartSynchronous () {
+      // create new local Queue
+      // sendQueue()
+    },
+    quickStartRandom () {
+      // create new local Queue
+      // sendQueue()
+    },
+    playAnimation () {
+      // send play byte
+    },
+    pauseAnimation () {
+      // send pause byte
+    },
+    stopAnimation () {
+      // send stop byte
     },
     getAdls () {
       axios
@@ -452,6 +459,31 @@ export default {
         this.adlNameSelected = e.target.value
       } else {
         this.adlNameExtra = ''
+      }
+    },
+    selectAll () {
+      for (let animationData of this.animationDataList) {
+        animationData.selected = true
+      }
+    },
+    unselectAll () {
+      for (let animationData of this.animationDataList) {
+        animationData.selected = false
+      }
+    },
+    async sendQueue () {
+      await this.stopAnimation()
+      await this.appendQueue()
+      await this.startAnimation()
+    },
+    appendQueue () {
+      for (let animationData of this.animationDataList) {
+        animationData.selected = false
+      }
+    },
+    resetQueue () {
+      while (this.animationDataList.length > 1) {
+        this.animationDataList.splice(1, 1)
       }
     }
   },
