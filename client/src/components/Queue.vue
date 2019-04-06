@@ -8,7 +8,7 @@
         <v-layout row wrap>
 
           <v-flex>
-            <h3>Quick-Mode</h3>
+            <h3>Mode</h3>
             <v-radio-group v-model="modeString" row>
               <v-radio label="Jump" value="0"/>
               <v-radio label="Fade" value="1"/>
@@ -18,11 +18,35 @@
           </v-flex>
 
           <v-flex>
-            <h3>Quick-Colors</h3>
+            <h3>Colors</h3>
             <v-radio-group v-model="quickColorString" row>
               <v-radio label="RGB" value="RGB"/>
               <v-radio label="Random" value="Random"/>
             </v-radio-group>
+          </v-flex>
+
+          <v-flex>
+            <h3>Frequency</h3>
+            <v-layout align-left justify-left row fill-height>
+              <div class="sliderRow">
+                <v-slider
+                  v-model="quickFrequency"
+                  min=6
+                  max=500
+                  step=1
+                  prepend-icon="mdi-heart-pulse"/>
+                <v-text-field
+                  class="mt-0"
+                  v-model="quickFrequency"
+                  hide-details
+                  single-line
+                  suffix="bpm"
+                  min=6
+                  max=500
+                  step=1
+                  type="number"/>
+              </div>
+            </v-layout>
           </v-flex>
 
           <v-flex>
@@ -39,11 +63,21 @@
       <h2>General settings</h2>
       <v-card>
         <v-layout row wrap>
+
           <v-flex>
+            <h3>Controls</h3>
+            <v-layout align-left justify-left row fill-height>
+              <v-btn color="success" @click="startAnimation"><v-icon left dark>mdi-play</v-icon>Start</v-btn>
+              <v-btn color="warning" @click="pauseAnimation"><v-icon left dark>mdi-pause</v-icon>Pause</v-btn>
+              <v-btn color="error" @click="stopAnimation"><v-icon left dark>mdi-stop</v-icon>Stop</v-btn>
+            </v-layout>
+          </v-flex>
+
+          <v-flex>
+            <h3>Brightness</h3>
             <div class="sliderRow">
               <v-slider
                 v-model="brightness"
-                label="Brightness"
                 min=0
                 max=100
                 step=5
@@ -58,17 +92,18 @@
                 min=0
                 max=100
                 step=5
-                type="number"/>
+                type="number"
+                @click="setBrightness"/>
             </div>
           </v-flex>
 
           <v-flex>
+            <h3>Speed</h3>
             <div class="sliderRow">
               <v-slider
                 v-model="speed"
-                label="Speed"
-                min=25
-                max=250
+                min=10
+                max=800
                 step=5
                 prepend-icon="mdi-speedometer"
                 @change="setSpeed"/>
@@ -78,20 +113,12 @@
                 hide-details
                 single-line
                 suffix="%"
-                min=25
-                max=250
+                min=10
+                max=800
                 step=5
-                type="number"/>
+                type="number"
+                @click="setSpeed"/>
             </div>
-          </v-flex>
-
-          <v-flex>
-            <h3>Controls</h3>
-            <v-layout align-left justify-left row fill-height>
-              <v-btn color="success" @click="startAnimation"><v-icon left dark>mdi-play</v-icon>Start</v-btn>
-              <v-btn color="warning" @click="pauseAnimation"><v-icon left dark>mdi-pause</v-icon>Pause</v-btn>
-              <v-btn color="error" @click="stopAnimation"><v-icon left dark>mdi-stop</v-icon>Stop</v-btn>
-            </v-layout>
           </v-flex>
 
         </v-layout>
@@ -129,13 +156,21 @@
         <v-layout row wrap>
 
           <v-flex>
-            <h3>Queue commands</h3>
+            <h3>Commands</h3>
             <v-layout align-left justify-left row fill-height>
               <v-btn @click="sendQueue"><v-icon left dark>mdi-file-move</v-icon>Send</v-btn>
               <v-btn @click="appendQueue"><v-icon left dark>mdi-file-plus</v-icon>Append</v-btn>
-              <v-btn @click="resetQueue"><v-icon left dark>mdi-file-outline</v-icon>Reset</v-btn>
             </v-layout>
           </v-flex>
+
+          <v-flex>
+            <h3>Order</h3>
+            <v-layout align-left justify-left row fill-height>
+              <v-btn @click="resetQueue"><v-icon left dark>mdi-close</v-icon>Reset</v-btn>
+              <v-btn @click="reverseQueue"><v-icon left dark>mdi-autorenew</v-icon>Reverse</v-btn>
+            </v-layout>
+          </v-flex>
+
 
           <v-flex>
             <h3>Select</h3>
@@ -198,8 +233,7 @@
             v-model="t"
             label="Duration"
             prepend-icon="mdi-watch"
-            @change="changeT"
-            style="width: 300px;"/>
+            @change="changeT"/>
           <v-text-field
             class="mt-0"
             v-model="t"
@@ -207,8 +241,7 @@
             single-line
             @change="changeT"
             suffix="s"
-            type="number"
-            style="width: 100px;"/>
+            type="number"/>
         </div>
         <div class="sliderRow">
           <v-slider
@@ -278,8 +311,11 @@ export default {
       adlNameSelected: '',
       adlIds: {},
       quickColorString: 'RGB',
+      quickFrequency: 60,
       brightness: 100,
-      speed: 100
+      speed: 100,
+      old_brightness: 100,
+      old_speed: 100
     }
   },
   components: {
@@ -393,14 +429,20 @@ export default {
       // sendQueue()
     },
     async setBrightness () {
-      await axios.post('http://localhost:3000/mqtt/brightness', {
-        brightness: this.brightness
-      })
+      if (this.old_brightness !== this.brightness) {
+        await axios.post('http://localhost:3000/mqtt/brightness', {
+          brightness: this.brightness
+        })
+        this.old_brightness = this.brightness
+      }
     },
     async setSpeed () {
-      await axios.post('http://localhost:3000/mqtt/speed', {
-        speed: this.speed
-      })
+      if (this.old_speed !== this.speed) {
+        await axios.post('http://localhost:3000/mqtt/speed', {
+          speed: this.speed
+        })
+        this.old_speed = this.speed
+      }
     },
     async startAnimation () {
       await axios
@@ -503,6 +545,9 @@ export default {
       while (this.animationDataList.length > 1) {
         this.animationDataList.splice(1, 1)
       }
+    },
+    reverseQueue () {
+      this.animationDataList.reverse()
     }
   },
   computed: {
