@@ -47,7 +47,8 @@
                 min=0
                 max=100
                 step=5
-                prepend-icon="mdi-brightness-6"/>
+                prepend-icon="mdi-brightness-6"
+                @change="setBrightness"/>
               <v-text-field
                 class="mt-0"
                 v-model="brightness"
@@ -69,7 +70,8 @@
                 min=25
                 max=250
                 step=5
-                prepend-icon="mdi-speedometer"/>
+                prepend-icon="mdi-speedometer"
+                @change="setSpeed"/>
               <v-text-field
                 class="mt-0"
                 v-model="speed"
@@ -125,13 +127,6 @@
       <h2>Queue</h2>
       <v-card>
         <v-layout row wrap>
-          <v-flex>
-            <h3>Select</h3>
-            <v-layout align-left justify-left row fill-height>
-              <v-btn @click="selectAll"><v-icon left>mdi-checkbox-multiple-marked-outline</v-icon>All</v-btn>
-              <v-btn @click="unselectAll"><v-icon left>mdi-checkbox-multiple-blank-outline</v-icon>None</v-btn>
-            </v-layout>
-          </v-flex>
 
           <v-flex>
             <h3>Queue commands</h3>
@@ -141,7 +136,17 @@
               <v-btn @click="resetQueue"><v-icon left dark>mdi-file-outline</v-icon>Reset</v-btn>
             </v-layout>
           </v-flex>
+
+          <v-flex>
+            <h3>Select</h3>
+            <v-layout align-left justify-left row fill-height>
+              <v-btn @click="selectAll"><v-icon left>mdi-checkbox-multiple-marked-outline</v-icon>All</v-btn>
+              <v-btn @click="unselectAll"><v-icon left>mdi-checkbox-multiple-blank-outline</v-icon>None</v-btn>
+            </v-layout>
+          </v-flex>
+
         </v-layout>
+
         <li v-for="(animationData, index) in animationDataList" :key="animationData.id+
         animationData.c1+
         animationData.c2+
@@ -387,14 +392,27 @@ export default {
       // create new local Queue
       // sendQueue()
     },
-    playAnimation () {
-      // send play byte
+    async setBrightness () {
+      await axios.post('http://localhost:3000/mqtt/brightness', {
+        brightness: this.brightness
+      })
     },
-    pauseAnimation () {
-      // send pause byte
+    async setSpeed () {
+      await axios.post('http://localhost:3000/mqtt/speed', {
+        speed: this.speed
+      })
     },
-    stopAnimation () {
-      // send stop byte
+    async startAnimation () {
+      await axios
+        .get('http://localhost:3000/mqtt/start')
+    },
+    async pauseAnimation () {
+      await axios
+        .get('http://localhost:3000/mqtt/pause')
+    },
+    async stopAnimation () {
+      await axios
+        .get('http://localhost:3000/mqtt/stop')
     },
     getAdls () {
       axios
