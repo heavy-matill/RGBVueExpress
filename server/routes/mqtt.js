@@ -9,5 +9,7 @@ router.route('/pause').get(mqttController.pauseAnimation)
 router.route('/stop').get(mqttController.stopAnimation)
 router.route('/brightness').post(mqttController.setBrightness)
 router.route('/speed').post(mqttController.setSpeed)
+router.route('/appendADL').post(mqttController.appendADL)
+router.route('/startADL').post(mqttController.startADL)
 // Export API routes
 module.exports = router;

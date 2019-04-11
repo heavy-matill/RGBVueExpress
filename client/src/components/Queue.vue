@@ -50,10 +50,14 @@
           </v-flex>
 
           <v-flex>
-            <h3>Synchronization</h3>
+            <h3>Action</h3>
             <v-layout align-left justify-left row fill-height>
+              <!--
+                <h3>Synchronization</h3>
               <v-btn @click="quickStartSynchronous"><v-icon left dark>mdi-shuffle-disabled</v-icon>Synced</v-btn>
               <v-btn @click="quickStartRandom"><v-icon left dark>mdi-shuffle-variant</v-icon>Random</v-btn>
+              -->
+              <v-btn @click="quickStartSynchronous"><v-icon left dark>mdi-shuffle-disabled</v-icon>Start</v-btn>
             </v-layout>
           </v-flex>
 
@@ -170,7 +174,6 @@
               <v-btn @click="reverseQueue"><v-icon left dark>mdi-autorenew</v-icon>Reverse</v-btn>
             </v-layout>
           </v-flex>
-
 
           <v-flex>
             <h3>Select</h3>
@@ -420,7 +423,37 @@ export default {
     },
     printAll () {
     },
+    quickRGBAnimationDataList () {
+      let binarys = [1, 3, 2, 6, 4, 7]
+      let quickAnimationDataList = []
+      for (var i in binarys) {
+        var animationData = {id: Number(i), mode: this.mode, c1: {r: 0, g: 0, b: 0}, c2: {r: 0, g: 0, b: 0}, t: 60 / this.quickFrequency, p: 0, nr: 0, br: true}
+        if (this.mode === 2) {
+          // if jump or strobe set ontime to 50%
+          animationData.p = 50
+        }
+        if (this.mode === 3) {
+          // if pulse, make sure to repeat
+          animationData.nr = 1
+          animationData.t /= 2
+        }
+        if (this.mode <= 1) {
+          // set color 1 to not black
+          animationData.c1.r = (binarys[i] & 0b001) * 255
+          animationData.c1.g = (binarys[i] & 0b010) / 2 * 255
+          animationData.c1.b = (binarys[i] & 0b100) / 4 * 255
+        }
+        // set color 2 to next color
+        animationData.c2.r = (binarys[(i + 1) % 6] & 0b001) * 255
+        animationData.c2.g = (binarys[(i + 1) % 6] & 0b010) / 2 * 255
+        animationData.c2.b = (binarys[(i + 1) % 6] & 0b100) / 4 * 255
+
+        quickAnimationDataList.push(animationData)
+      }
+      console.log(quickAnimationDataList)
+    },
     quickStartSynchronous () {
+      this.quickRGBAnimationDataList()
       // create new local Queue
       // sendQueue()
     },
@@ -532,14 +565,16 @@ export default {
       }
     },
     async sendQueue () {
-      await this.stopAnimation()
-      await this.appendQueue()
-      await this.startAnimation()
+      await axios
+        .post('http://localhost:3000/mqtt/startADL', {
+          adl: this.animationDataList
+        })
     },
-    appendQueue () {
-      for (let animationData of this.animationDataList) {
-        animationData.selected = false
-      }
+    async appendQueue () {
+      await axios
+        .post('http://localhost:3000/mqtt/appendADL', {
+          adl: this.animationDataList
+        })
     },
     resetQueue () {
       while (this.animationDataList.length > 1) {
@@ -572,8 +607,8 @@ export default {
       get: function () {
         return String(this.mode)
       },
-      set: function () {
-        this.mode = Number(this.modeString)
+      set: function (value) {
+        this.mode = Number(value)
       }
     }
   },
