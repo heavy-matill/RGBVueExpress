@@ -222,7 +222,7 @@
       </v-card>
       <v-card>
         <h3>Mode</h3>
-        <v-radio-group v-model="modeString" row @change="changeMode">
+        <v-radio-group v-model="modeString" row>
           <v-radio label="Jump" value="0"/>
           <v-radio label="Fade" value="1"/>
           <v-radio label="Strobe" value="2"/>
@@ -283,11 +283,13 @@
         </div>
       </v-card>
     </v-container>
+    <!--<LogSlider/>-->
   </div>
 </template>
 
 <script>
 import Animation from './Animation'
+import LogSlider from './LogSlider'
 import { Sketch } from 'vue-color'
 import axios from 'axios'
 
@@ -323,6 +325,7 @@ export default {
   },
   components: {
     Animation,
+    LogSlider,
     'sketch-picker': Sketch
   },
   methods: {
@@ -618,32 +621,15 @@ export default {
     },
     cp2: function (val) {
       this.changeC2()
+    },
+    modeString: function (val) {
+       this.changeMode()
     }
   },
   mounted () {
     this.getAdls()
   }
 }
-function LogSlider (options) {
-  options = options || {}
-  this.minpos = options.minpos || 0
-  this.maxpos = options.maxpos || 100
-  this.minlval = Math.log(options.minval || 1)
-  this.maxlval = Math.log(options.maxval || 100000)
-
-  this.scale = (this.maxlval - this.minlval) / (this.maxpos - this.minpos)
-}
-LogSlider.prototype = {
-  // Calculate value from a slider position
-  value: function (position) {
-    return Math.exp((position - this.minpos) * this.scale + this.minlval)
-  },
-  // Calculate slider position from a value
-  position: function (value) {
-    return this.minpos + (Math.log(value) - this.minlval) / this.scale
-  }
-}
-var logslDur = new LogSlider({maxpos: 100, minval: 0.01, maxval: 65.535})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -698,6 +684,7 @@ a {
   border-radius: None;
   box-shadow: None;
   width: 90%;
+  max-width: 400px;
   background-color: None;
 }
 .sliderRow {

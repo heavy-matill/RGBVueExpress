@@ -10,7 +10,7 @@ exports.anim2str = function(animationData) {
     }
     // time1 and time2
     for (p of [animationData.p, 100-animationData.p]) {
-        str_temp = this.num2hex(Math.round(animationData.t*p/100*256))
+        str_temp = this.num2hex(Math.round(animationData.t*p/100*1000))
         while (str_temp.length <4) {
             str_temp = "0" + str_temp
         }
@@ -41,8 +41,8 @@ exports.pauseAnimation = "02"
 exports.setBrightness = function(brightness) {
     return "08" + this.num2hex(Math.round(0.49 + Math.pow(brightness,3) / 1000000 * 127.5))
 }
-exports.setSpeed = async function (speed) {
-    return this.num2hex(Math.round(speed * 0.16))
+exports.setSpeed = function (speed) {
+    return "09" + this.num2hex(Math.round(speed * 0.16))
 }
 
 exports.num2hex = function(num) {
