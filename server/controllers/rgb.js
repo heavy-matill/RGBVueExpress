@@ -9,6 +9,9 @@ exports.anim2str = function(animationData) {
         animationString += this.num2hex(c.b)
     }
     // time1 and time2
+    if (animationData.mode % 2) {
+        animationData.p = 100 - animationData.p
+    }
     for (p of [animationData.p, 100-animationData.p]) {
         str_temp = this.num2hex(Math.round(animationData.t*p/100*1000))
         while (str_temp.length <4) {
@@ -27,12 +30,12 @@ exports.anim2str = function(animationData) {
 
 exports.adl2str = function(animationDataList) {
     console.log(animationDataList)
-    let animationListString = ""
+    let stringArray = []
     // iterate over list
     for (animationData of animationDataList) {
-        animationListString += this.anim2str(animationData)
+        stringArray.push(this.anim2str(animationData))
     }
-    return animationListString
+    return stringArray
 }
 
 exports.startAnimation = "00"

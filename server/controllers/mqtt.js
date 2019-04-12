@@ -51,11 +51,17 @@ exports.setSpeed = async function (req, res) {
 }
 
 exports.appendADL = async function (req, res) {  
-  await client.publish("rgb", rgb.adl2str(req.body.adl)) 
+  for (string of rgb.adl2str(req.body.adl)) {
+    await client.publish("rgb", string) 
+  }
   res.send("appended ADL: " + req.body.adl) 
 }
 
 exports.startADL = async function (req, res) {
-  await client.publish("rgb", rgb.stopAnimation + rgb.adl2str(req.body.adl) + rgb.startAnimation) 
+  await client.publish("rgb", rgb.stopAnimation) 
+  for (string of rgb.adl2str(req.body.adl)) {
+    await client.publish("rgb", string) 
+  }
+  await client.publish("rgb", rgb.startAnimation)
   res.send("started ADL: " + req.body.adl) 
 }

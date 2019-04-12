@@ -79,7 +79,6 @@ export default {
     index: Number,
     id: Number,
     showId: Number,
-    selectMultiple: Boolean,
     animationData: {
       mode: Number,
       c1: {
@@ -185,39 +184,25 @@ export default {
       if (e.stopPropagation) e.stopPropagation()
     },
     changeC1 () {
-      if (this.selectMultiple) {
-        this.$emit('changeMode', this.animationData.c1, this.id)
-      }
+      this.$emit('changeMode', this.animationData.c1, this.id)
     },
     changeC2 () {
-      if (this.selectMultiple) {
-        this.$emit('changeMode', this.animationData.c2, this.id)
-      }
+      this.$emit('changeMode', this.animationData.c2, this.id)
     },
     changeMode () {
-      if (this.selectMultiple) {
-        this.$emit('changeMode', this.animationData.mode, this.id)
-      }
+      this.$emit('changeMode', this.animationData.mode, this.id)
     },
     changeT () {
-      if (this.selectMultiple) {
-        this.$emit('changeT', this.animationData.t, this.id)
-      }
+      this.$emit('changeT', this.animationData.t, this.id)
     },
     changeP () {
-      if (this.selectMultiple) {
-        this.$emit('changeP', this.animationData.p, this.id)
-      }
+      this.$emit('changeP', this.animationData.p, this.id)
     },
     changeNr () {
-      if (this.selectMultiple) {
-        this.$emit('changeNr', this.animationData.nr, this.id)
-      }
+      this.$emit('changeNr', this.animationData.nr, this.id)
     },
     changeBr () {
-      if (this.selectMultiple) {
-        this.$emit('changeBr', this.animationData.br, this.id)
-      }
+      this.$emit('changeBr', this.animationData.br, this.id)
     },
     unselectAll () {
       this.$emit('unselectAll')

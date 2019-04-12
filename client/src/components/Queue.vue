@@ -192,6 +192,7 @@
         animationData.selected+
         animationData.mode">
           <Animation :index="index" :id="animationData.id" :showId="showId" :animationData="animationData"
+          @selectAll="selectAll"
           @unselectAll="unselectAll"
           @add="add"
           @move="move"
@@ -526,6 +527,7 @@ export default {
         .then(res => {
           for (let animationData of res.data.data.animationDataList) {
             animationData.id = this.nextId++
+            animationData.selected = true
           }
           this.animationDataList = res.data.data.animationDataList
         })
@@ -536,6 +538,7 @@ export default {
         .then(res => {
           for (let animationData of res.data.data.animationDataList) {
             animationData.id = this.nextId++
+            animationData.selected = true
             this.animationDataList.push(animationData)
           }
         })
@@ -589,14 +592,14 @@ export default {
     }
   },
   computed: {
-    posT: {
+    /* posT: {
       get: function () {
         return logslDur.position(this.t)
       },
       set: function (newPosT) {
         this.t = Math.round(logslDur.value(newPosT) * 100) / 100
       }
-    },
+    }, */
     adlNames: {
       get: function () {
         let adlNamesTemp = Object.keys(this.adlIds)
@@ -623,7 +626,7 @@ export default {
       this.changeC2()
     },
     modeString: function (val) {
-       this.changeMode()
+      this.changeMode()
     }
   },
   mounted () {

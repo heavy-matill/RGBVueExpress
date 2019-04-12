@@ -32,7 +32,7 @@ LogSliderClass.prototype = {
     return this.minpos + (Math.log(value) - this.minlval) / this.scale
   }
 }
-var logslDur = new LogSliderClass({maxpos: 100, minval: 0.01, maxval: 65.535})
+// var logslDur = new LogSliderClass({maxpos: 100, minval: 0.01, maxval: 65.535})
 // var logslRep = new LogSlider({maxpos: 100, minval: 0, maxval: 256})
 </script>
 
